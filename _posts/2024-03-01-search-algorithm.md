@@ -4,7 +4,7 @@ author: gyeomji
 date: 2024-03-01 10:00:00 +0900
 categories: [Algorithm]
 tags: [Algorithm, Linear Search, Binary Search, 선형 탐색, 이진 탐색]
-pin: true
+pin: false
 math: true
 mermaid: true
 ---

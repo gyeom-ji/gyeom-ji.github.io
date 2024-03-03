@@ -4,7 +4,7 @@ author: gyeomji
 date: 2024-03-02 10:00:00 +0900
 categories: [Algorithm]
 tags: [Algorithm, Greedy, Kruskal, 크루스칼, MST, 최소 신장 트리]
-pin: true
+pin: false
 math: true
 mermaid: true
 ---

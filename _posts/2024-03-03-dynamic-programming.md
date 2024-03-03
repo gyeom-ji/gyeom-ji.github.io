@@ -4,7 +4,7 @@ author: gyeomji
 date: 2024-03-03 10:00:00 +0900
 categories: [Algorithm]
 tags: [Algorithm, Dynamic Programming, 동적 계획법]
-pin: true
+pin: false
 math: true
 mermaid: true
 ---

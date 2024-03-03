@@ -4,7 +4,7 @@ author: gyeomji
 date: 2024-03-02 10:00:00 +0900
 categories: [Algorithm]
 tags: [Algorithm, Greedy, 탐욕]
-pin: true
+pin: false
 math: true
 mermaid: true
 ---
