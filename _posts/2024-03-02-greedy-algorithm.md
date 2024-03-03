@@ -166,5 +166,6 @@ func solution(_ number:String, _ k:Int) -> String {
 ```
 
 <br />
+
 [^footnote]: The footnote source
 [^fn-nth-2]: The 2nd footnote source
