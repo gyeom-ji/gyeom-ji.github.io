@@ -13,7 +13,7 @@ mermaid: true
 <span style='background-color:#c8d8b4'>한 큰 문제를 여러개의 작은 문제로 쪼개 그 결과를 저장하고 큰 문제를 해결할 때 **재사용**</span>하는 특정한 알고리즘이 아닌 하나의 문제 해결 패러다임<br /> 
 문제를 작게 쪼개서 하위 문제를 해결하고 연계적으로 큰 문제를 헤결한다는 점은 분할 정복과 동일하지만, DP는 중복이 일어나는 경우 사용한다.<br /> 
 
-> 💡  <span style="font-size: 15px"> 분할 정복은 1. 분할 2. 정복으로 문제를 나눠서 해결한다.<br /> 　 　분할된 하위 문제가 중복이 일어나지 않는 경우에 사용한다.<br />　 　병합 정렬, [<span style="color:#9fb584">**이진 탐색**</span>]("https://gyeom-ji.github.io/posts/search-algorithm/"):, 거듭제곱 연산</span>
+> 💡  <span style="font-size: 15px"> 분할 정복은 1. 분할 2. 정복으로 문제를 나눠서 해결한다.<br /> 　 　분할된 하위 문제가 중복이 일어나지 않는 경우에 사용한다.<br />　 　병합 정렬, 이진 탐색, 거듭제곱 연산</span>
 
 <br/> 
 <br/>
