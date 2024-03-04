@@ -66,7 +66,7 @@ func iterativeBinarySearch(_ arr: [Int],_ value: Int,_ start: Int,_ end: Int) ->
     while start <= end {
         let mid = (start + end) / 2
         if arr[mid] == value { return mid }
-        if arr[min] < value {
+        if arr[mid] < value {
             start = mid + 1
         } else {
             end = mid - 1
