@@ -95,8 +95,136 @@ dp[0]부터 시작하여 반복문을 통해 점화식으로 결과를 내서 dp
 
 ---
 
+#### Programmers - 스티커 모으기
 
+\- n개의 스티커가 원형 형태로 부착되어 있다고 가정할때 원 안의 스티커 중 일부를 떼어내 스티커에 적힌 숫자의 최대 합을 구하는 문제<br />스티커의 원형 형태를 유지하기 위해 첫 번째 요소와 마지막 요소가 서로 연결되어 있다고 가정한다.<br />스티커를 떼어내면 해당 스티커 양쪽의 스티커는 쓸 수 없다.
 
+> 💡 0번째와 1번째 스티커를 뜯는 경우의 합을 계산해서 최대 합 구하기 <br />
+
+<br />
+
+```swift
+import Foundation
+
+func solution(_ sticker:[Int]) -> Int{
+    let cnt = sticker.count
+    if cnt < 3 {
+        return sticker.max()!
+    }
+    var dp = Array(repeating: 0, count: cnt)
+    var anw = 0
+
+    // 0번째 스티커 뜯을 경우의 기저 상태
+    dp[0] = sticker[0]
+    dp[1] = sticker[0]
+
+    for i in 2..<cnt - 1 {
+        // 점화식
+        dp[i] = max(dp[i - 1], dp[i - 2] + sticker[i])
+    }
+    anw = dp[cnt - 2]
+
+    // 1번째 스티커 뜯을 경우의 기저 상태
+    dp[0] = 0
+    dp[1] = sticker[1]
+
+    for i in 2..<cnt {
+        dp[i] = max(dp[i - 1], dp[i - 2] + sticker[i])
+    }
+    return max(anw, dp[cnt - 1])
+}
+```
+
+- 배운점
+  : 현재의 최적 합을 이용해 전체 문제의 최적 합을 구할 수 있기 때문에 dp를 사용해서 문제를 해결했다. 스티커가 원형이고 해당 스티커를 뜯을 경우 양쪽 스티커를 사용할 수 없기 때문에 0번째 스티커를 뜯는 경우, 1번째 스티커를 뜯는 경우를 나눠서 계산한 후 최대합을 찾았다. (0번째 스티커를 뜯을 경우 cnt - 1번째 스티커 사용할 수 없음)
+
+<br />
+
+---
+
+#### Programmers - 연속 펄스 부분 수열의 합
+
+\- 어떤 수열의 연속 부분 수열에 같은 길이의 펄스 수열을 각 원소끼리 곱해 연속 펄스 부분 수열을 만들 때 연속 펄스 부분 수열의 합 중 가장 큰 것을 구하는 문제<br /> 펄스 수열이란 [-1,1,-1,1...], [1,-1,1,-1...] 과 같이 1 또는 -1 로 시작하며 1과 -1이 번갈아 나오는 수열이다.
+
+> 💡 1, -1로 시작하는 펄스를 곱하여 수열의 합을 구하는 dp배열을 만들고 최대합 구하기 <br />
+
+<br />
+
+```swift
+import Foundation
+
+func solution(_ sequence:[Int]) -> Int64 {
+    let cnt = sequence.count
+    var dp1 = Array(repeating: 0, count: cnt)
+    var dp2 = Array(repeating: 0, count: cnt)
+    var pulse1 = 1, pulse2 = -1
+
+    dp1[0] = sequence[0] * pulse1
+    dp2[0] = sequence[0] * pulse2
+
+    for i in 1..<cnt {
+        pulse1 *= -1
+        pulse2 *= -1
+        // 점화식
+        dp1[i] = max(dp1[i - 1] + (sequence[i] * pulse1), (sequence[i] * pulse1))
+        dp2[i] = max(dp2[i - 1] + (sequence[i] * pulse2), (sequence[i] * pulse2))
+    }
+
+    return Int64(max(dp1.max()!, dp2.max()!))
+}
+```
+
+- 배운점
+  : 펄스 수열이 1, -1 두 가지로 시작할 수 있기 때문에 dp배열을 2개 만들어 계산했다. **연속 부분 수열**의 합을 구하는 문제이기 때문에 i번째 원소를 i - 1번째 원소에 더했을 때와 i번째 원소의 크기를 비교하여 더 큰 값을 dp[i]에 저장하는 점화식을 사용했다.
+
+<br />
+
+---
+
+#### Programmers - 풍선 터트리기
+
+\- 일렬로 나열된 N개의 서로 다른 숫자가 쓰인 풍선이 있다. 아래의 과정을 반복하며 풍선이 1개만 남을 때까지 계속 터트릴 때 최후까지 남는 것이 가능한 풍선의 개수를 구하는 문제<br />1. 임의의 인접한 두 풍선을 고른 뒤, 두 풍선 중 하나를 터트린다.<br />2. 터진 풍선으로 인해 빈 공간이 생길 시, 빈 공간이 없도록 풍선들을 중앙으로 밀착시킨다.<br />3. 인접한 풍선 중 번호가 더 작은 풍선을 터트리는 행위는 1번만 할 수 있다. 
+
+> 💡 마지막 풍선이 될 수 있는 조건 : 좌우 방향 중 한쪽에만 작은 숫자가 존재할 경우 (작은 풍선은 1번만 터트릴 수 있음)<br />
+
+<br />
+
+```swift
+import Foundation
+
+func solution(_ a:[Int]) -> Int {
+    let cnt = a.count
+    var leftDp = Array(repeating: 0, count: cnt)
+    var rightDp = Array(repeating: 0, count: cnt)
+    var anw = 0
+
+    leftDp[0] = a[0]
+    rightDp[cnt - 1] = a[cnt - 1]
+
+    // 오른쪽에서부터 최솟값 저장
+    for i in stride(from: cnt - 2, to: -1, by: -1) {
+        rightDp[i] = min(a[i], rightDp[i + 1])
+    }
+
+    // 왼쪽에서부터 최솟값 저장
+    for i in 1..<cnt {
+        leftDp[i] = min(a[i], leftDp[i - 1])
+    }
+
+    for i in 0..<cnt {
+        // 한쪽이라도 i번째 풍선이 최소 값이라면 마지막까지 살아남을 수 있음
+        if a[i] <= leftDp[i] || a[i] <= rightDp[i] {
+            anw += 1
+        }
+    }
+    return anw
+}
+```
+
+- 배운점
+  : 풍선이 마지막까지 살아남으려면 한쪽 방향에만 자신보다 작은 풍선이 있어야 한다. 왼쪽, 오른쪽에서 시작하는 dp배열을 만들어 i번째 풍선과 그전의 풍선을 비교해 더 작은 풍선을 저장한다. 반복문을 돌며 한쪽이라도 i번째 풍선이 최솟값이라면 해당 풍선은 살아남을 수 있다. 풍선이 살아남을 수 있는 조건을 생각하는 게 어려웠다..
+
+<br />
 <br />
 
 [^footnote]: The footnote source
