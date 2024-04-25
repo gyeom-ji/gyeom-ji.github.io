@@ -87,7 +87,7 @@ struct ArrayQueue<T> {
     private var arr: [T] = []
 
     mutating func enqueue(_ value: T) {
-        instack.append(value)
+        arr.append(value)
     }
 
     mutating func dequeue() -> T? {
@@ -113,17 +113,18 @@ struct DoubleStackQueue<T> {
     private var outStack: [T] = []
 
     mutating func enqueue(_ value: T) {
-        instack.append(value)
+        inStack.append(value)
     }
 
     mutating func dequeue() -> T? {
         if outStack.isEmpty {
-            outStack = instack.reversed()
+            outStack = inStack.reversed()
             inStack.removeAll()
         }
         return outStack.popLast()
     }
 }
+
 ```
 
 3. Linked List

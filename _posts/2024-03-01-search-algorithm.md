@@ -54,9 +54,9 @@ func recursiveBinarySearch(_ arr: [Int],_ value: Int,_ start: Int,_ end: Int) ->
     let mid = arr.count / 2
     if arr[mid] == value { return mid }
     if arr[mid] < value {
-        resursiveBinarySearch(arr, value, mid + 1, end)
+        return recursiveBinarySearch(arr, value, mid + 1, end)
     } else {
-        resursiveBinarySearch(arr, value, start, mid - 1)
+        return recursiveBinarySearch(arr, value, start, mid - 1)
     }
 }
 

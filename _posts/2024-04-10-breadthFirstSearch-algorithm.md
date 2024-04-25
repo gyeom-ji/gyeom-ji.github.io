@@ -106,7 +106,7 @@ func solution(_ board:[String]) -> Int {
     let board = board.map{ $0.map{ String($0) } }
     var visited = Array(repeating: Array(repeating: false, count: board[0].count), count: board.count)
     let rmax = board.count - 1, cmax = board[0].count - 1
-    let dy= [-1,1,0,0], dx = [0,0,-1,1]
+    let dy = [-1,1,0,0], dx = [0,0,-1,1]
     
     func findStart() -> (Int, Int) {
         for i in 0...rmax {
