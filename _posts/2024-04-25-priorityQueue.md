@@ -65,7 +65,7 @@ mermaid: true
 
 : 완전이진트리는 1차원 배열로 구현하기 때문에 힙도 일반적으로 <span style='background-color:#c8d8b4'>배열으로 구현</span>한다.
 
-- 배열의 1번 인덱스부터 사용한다.
+- 배열의 <span style="color:#9fb584">**1번 인덱스부터 사용**</span>한다.
   - 0번째 인덱스는 사용하지 않는다.
 - 완전이진트리의 노드들을 레벨 순회 순서에 따라 array[1]부터 차례로 저장한다.
 - 노드를 배열에 저장했을 경우 부모와 자식 관계
@@ -83,9 +83,12 @@ mermaid: true
 
 ```swift
     
-mutating func dequeue() -> Int {
+mutating func dequeue() -> Int? {
+    if size == 0 {
+        return nil
+    }
     var min = heap[1]
-    heap.swapAt(1, size - 1)
+    heap.swapAt(1, size)
     heap.removeLast()
     size -= 1
     downheap(1)
@@ -96,8 +99,8 @@ private mutating func downheap(_ i: Int) {
     var i = i
     while(2 * i <= size) {
         var k = 2 * i
-        if k < size && greater(k, k + 1) { k += 1 }
-        if !greater(i, k) {break}
+        if k < size && (heap[k] > heap[k + 1]) { k += 1 }
+        if heap[i] < heap[k] { break }
         heap.swapAt(i, k)
         i = k
     }
@@ -119,7 +122,7 @@ mutating func enqueue(_ value: Int) {
 
 private mutating func upheap(_ j: Int) {
     var j = j
-    while(j > 1 && greater(j/2, j)) {
+    while(j > 1 && heap[j/2] > heap[j]) {
         heap.swapAt(j/2, j)
         j = j/2
     }
