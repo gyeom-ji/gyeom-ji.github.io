@@ -1,7 +1,7 @@
 ---
-title: "Prim Algorithm"
+title: "프림 알고리즘 Prim Algorithm"
 author: gyeomji
-date: 2024-03-02 10:00:00 +0900
+date: 2024-05-01 10:00:00 +0900
 categories: [Algorithm]
 tags: [Algorithm, Greedy, Prim, MST, 최소 신장 트리]
 pin: false
