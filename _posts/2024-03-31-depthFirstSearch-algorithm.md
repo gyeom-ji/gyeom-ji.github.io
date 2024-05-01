@@ -10,7 +10,7 @@ mermaid: true
 ---
 
 <br/> 
-트리나 그래프를 탐색하는 기법 중 하나로 경로의 <span style="color:#9fb584">**특징을 저장**</span>해야 하거나, <span style="color:#9fb584">**목표 노드가 깊은 단계</span>에 있는 문제일때 유용하다.<br />
+트리나 그래프를 탐색하는 기법 중 하나로 경로의 <span style="color:#9fb584">**특징을 저장**</span>해야 하거나, <span style="color:#9fb584">**목표 노드가 깊은 단계**</span>에 있는 문제일때 유용하다.<br />
 시작 노드에서 자식 노드들을 순서대로 탐색하며 <span style='background-color:#c8d8b4'>깊이를 우선으로 탐색하는 알고리즘</span>이다.<br /> 
 깊이를 우선시해 모든 경우의 수를 탐색하기 때문에 완전 탐색 알고리즘에 속하기는 하지만, 항상 완전탐색으로 사용되지는 않는다. 주로 <span style="color:#9fb584">**반복문 (stack)**, **재귀문**</span>으로 구현된다. 
 
