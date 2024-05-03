@@ -44,6 +44,12 @@ mermaid: true
 3. 2번을 T의 개수가 그래프의 정점 개수가 될 때까지 반복한다.
    1. 간선의 가중치를 더하여 최소 신장 트리 비용을 산출한다.
 
+<br/>
+
+![prim](/assets/img/prim1.png)
+![prim](/assets/img/prim2.png)
+
+<br/>
 
 ```swift
 

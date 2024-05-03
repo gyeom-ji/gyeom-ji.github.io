@@ -48,6 +48,14 @@ mermaid: true
 3. 모든 간선에 대해 2번 과정을 반복한다. (n - 1개의 간선이 선택되었을 때 종료)
 
 <br/>
+
+
+![kruskal](/assets/img/kruskal1.png)
+![kruskal](/assets/img/kruskal2.png)
+![kruskal](/assets/img/kruskal3.png)
+
+<br/>
+
 <span style="color:#9fb584">**[ 주의 사항 ]**</span><br/>
 - 간선을 MST에 추가할 때 사이클을 생성하는지 체크해야 한다
 - 새로운 간선의 **양끝 정점이 같은 집합에 속해 있으면 사이클이 형성** 됨
