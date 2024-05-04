@@ -10,7 +10,7 @@ mermaid: true
 ---
 
 <br/> 
-**최소 신장 트리 알고리즘**으로<br /> 크루스칼, 프림 알고리즘처럼 간선을 하나씩 선택하는 것이 아닌 <span style="color:#9fb584">**동시에 여러 개의 간선을 선택**</span>한다. 프림 알고리즘은 매 순간 최선의 조건을 선택하는 탐욕 알고리즘을 바탕으로, <span style='background-color:#c8d8b4'>가중치가 가장 가벼운 간선을 선택</span>하여 <span style="color:#9fb584">**Forest**</span>를 만들어가며 하나의 트리를 만드는 방식의 알고리즘이다. 
+<span style="color:#9fb584">**최소 신장 트리 알고리즘**</span>으로 크루스칼, 프림 알고리즘처럼 간선을 하나씩 선택하는 것이 아닌 <span style="color:#9fb584">**동시에 여러 개의 간선을 선택**</span>한다. 프림 알고리즘은 매 순간 최선의 조건을 선택하는 탐욕 알고리즘을 바탕으로, <span style='background-color:#c8d8b4'>가중치가 가장 가벼운 간선을 선택</span>하여 <span style="color:#9fb584">**Forest**</span>를 만들어가며 하나의 트리를 만드는 방식의 알고리즘이다. 
 
 <br/> 
 <br/>
