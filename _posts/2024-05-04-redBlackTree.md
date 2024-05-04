@@ -2,8 +2,8 @@
 title: "레드 블랙 트리 Red-Black Tree"
 author: gyeomji
 date: 2024-05-04 10:00:00 +0900
-categories: [Algorithm]
-tags: [Algorithm, Red-Black Tree]
+categories: [Data Structure]
+tags: [Data Structure, Red-Black Tree]
 pin: false
 math: true
 mermaid: true
