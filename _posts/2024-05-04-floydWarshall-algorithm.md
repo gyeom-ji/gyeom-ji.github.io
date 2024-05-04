@@ -3,7 +3,7 @@ title: "플로이드 와샬 알고리즘 Floyd-Warshall Algorithm"
 author: gyeomji
 date: 2024-05-04 10:00:00 +0900
 categories: [Algorithm]
-tags: [Algorithm, Greedy, Floyd-Warshall]
+tags: [Algorithm, DP, Floyd-Warshall]
 pin: false
 math: true
 mermaid: true
