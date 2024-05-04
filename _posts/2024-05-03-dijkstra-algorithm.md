@@ -10,7 +10,7 @@ mermaid: true
 ---
 
 <br/> 
-<span style="color:#9fb584">**최단 경로 찾기 알고리즘**</span>으로 <span style='background-color:#c8d8b4'>음의 간선이 없는 가중 그래프</span>에서 출발점으로부터 각 정점까지의 <span style="color:#9fb584">**최단거리 및 경로를 계산**</span>하는 알고리즘이다. [`Prim 알고리즘`](https://gyeom-ji.github.io/posts/prim-algorithm/)과 매우 유사하며, <span style="color:#9fb584">**동일한 수행시간**</span>을 가진다. Dijkstra 알고리즘은 출발점이 주어지지만, Prim 알고리즘은 출발점이 주어지지 않는다. Prim 알고리즘은 배열 distance의 원소에 간선의 가중치가 저장되지만, Dijkstra 알고리즘은 distance의 원소에 출발점으로부터 각 정점까지의 <span style="color:#9fb584">**경로 길이가 저장**</span>된다.
+<span style="color:#9fb584">**최단 경로 찾기 알고리즘**</span>으로 <span style='background-color:#c8d8b4'>음의 간선이 없는 가중 그래프</span>에서 출발점으로부터 각 정점까지의 <span style="color:#9fb584">**최단거리 및 경로를 계산**</span>하는 알고리즘이다. [`Prim 알고리즘`](https://gyeom-ji.github.io/posts/prim-algorithm/)과 매우 유사하며, <span style="color:#9fb584">**동일한 수행시간**</span>을 가진다. Dijkstra 알고리즘은 출발점이 주어지지만, Prim 알고리즘은 출발점이 주어지지 않는다. Prim 알고리즘은 배열 distance의 원소에 간선의 가중치가 저장되지만, Dijkstra 알고리즘은 distance의 원소에 출발점으로부터 각 정점까지의 <span style="color:#9fb584">**경로 길이가 저장**</span>된다. 동일한 거리에 여러 경로가 있는 경우 최상의 경로를 보장하지 않는다.
 
 <br/> 
 <br/>
@@ -241,7 +241,7 @@ struct Dijkstra {
             print()
         }
     }
-    
+
     mutating func dikstra(_ start: Int) -> [Int] {
         // 초기화
         var distance = Array(repeating: Int.max, count: count)
