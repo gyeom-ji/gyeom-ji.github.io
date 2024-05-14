@@ -58,13 +58,23 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
 
 ---
 
-메모리에는 Text, Data, Stack, Heap 4가지 영역이 존재한다.
+![memory](/assets/img/memory.png)
 
-- <span style="color:#9fb584">**Text**</span> 영역은 앱이 실행해야 할 프로그램의 코드를 저장한다.
+프로그램이 실행되면 OS는 메모리(RAM)에 해당 프로그램을 위한 공간을 할당해준다. 메모리에는 Code, Data, Stack, Heap 4가지 영역이 존재한다.
 
+- <span style="color:#9fb584">**Code**</span> 영역은 앱이 실행해야 할 프로그램의 코드를 저장한다.
+  - <span style="color:#9fb584">**소스 코드가 기계어 형태로 저장**</span>된다.
+  - <span style="color:#9fb584">**컴파일 타임에 결정되고, 중간에 코드가 변경되지 않도록 Read-Only**</span> 형태로 저장된다.
+  
+<br/>
 
-- <span style="color:#9fb584">**Data**</span> 영역은 프로그램의 전역 변수, 정적 변수를 저장한다.
+- <span style="color:#9fb584">**Data**</span> 영역은 프로그램의 전역 변수, 정적 변수(static)를 저장한다.
     - 어디서든 접근 가능하며, 프로세스가 끝날때까지 유지된다.
+    - 프로그램 <span style="color:#9fb584">**시작과 동시에 할당되고, 프로그램이 종료 되어야 메모리가 해제**</span>된다.
+  
+    > <span style="color:#9fb584">**Swift에서 static은 기본 동작이 lazy**</span>이다. 모든 전역(global) 상수, 변수는 항상 lazy로 생성된다. Lazy Stored Property의 동작방식과 같지만, lazy 키워드가 필요 없다. 지역(local) 상수, 변수는 절대 lazy로 생성되지 않는다. static은 항상 전역으로 선언되기 때문에 lazy로 생성된다. 즉 <span style="color:#9fb584">**Swift에서 static변수는 Lazy Stored Property와 같이 초기값이 그 변수가 처음 사용될 때 계산**</span>된다. Lazy Stored Property와의 차이점은, 전역 변수는 <span style="color:#9fb584">**프로그램 시작과 동시에 메모리에 올라가고, 실 사용될 때 값이 초기화**</span>되지만, lazy property는 메모리에도 올라가지 않고, 실제 사용될 때 메모리에 올라가고 초기화된다.
+
+    - 실행 도중 변수 값이 변경될 수 있어 <span style="color:#9fb584">**Read-Write**</span>로 저장된다.
 
 <br/>
 - <span style="color:#9fb584">**Stack**</span>은 일시적인 데이터를 저장하며, 하나의 명령어(pop, push)로 메모리를 할당, 해제할 수 있기 때문에 <span style="color:#9fb584">**매우 빠르고 효율적이다.**</span>
