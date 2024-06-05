@@ -1,9 +1,9 @@
 ---
 title: "메모리 관리 기법 - Segmentation 세그멘테이션"
 author: gyeomji
-date: 2024-05-19 10:00:00 +0900
+date: 2024-05-25 10:00:00 +0900
 categories: [Operating System]
-tags: [Memory, Operating System, Segmentation]
+tags: [Memory, Segmentation]
 pin: false
 math: true
 mermaid: true

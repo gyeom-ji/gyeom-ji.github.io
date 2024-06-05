@@ -1,9 +1,9 @@
 ---
 title: "가상 메모리"
 author: gyeomji
-date: 2024-05-21 10:00:00 +0900
+date: 2024-05-27 10:00:00 +0900
 categories: [Operating System]
-tags: [Virtual Memory, Operating System]
+tags: [Virtual Memory]
 pin: false
 math: true
 mermaid: true

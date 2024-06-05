@@ -1,9 +1,9 @@
 ---
 title: "메모리 관리 기법"
 author: gyeomji
-date: 2024-05-16 10:00:00 +0900
+date: 2024-05-22 10:00:00 +0900
 categories: [Operating System]
-tags: [Memory, Operating System, Swapping, Dynamic Loading, Dynamic Linking, Fixed Partitioning, Variable(Dynamic) Partitioning]
+tags: [Memory, Swapping, Dynamic Loading, Dynamic Linking, Fixed Partitioning, Variable(Dynamic) Partitioning]
 pin: false
 math: true
 mermaid: true
