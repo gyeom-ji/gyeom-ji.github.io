@@ -22,6 +22,8 @@ mermaid: true
   - 스왑 공간은 읽는 시간도 느리지만, 쓰기 작업까지 더해지면 더욱 비효율적이다.
 - 페이지 테이블에 Modified Bit(Dirty Bit)을 추가하여 검사한다.
 
+<br/>
+
 ## 1. FIFO (First In First Out)
 
 ---
