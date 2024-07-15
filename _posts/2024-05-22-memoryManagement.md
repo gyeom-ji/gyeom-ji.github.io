@@ -21,7 +21,7 @@ mermaid: true
   - 너무 많은 수의 프로세스는 빈번한 `Swapping`을 야기할 수 있다.
 - 메모리 관리는 OS(Memory Manager)에 의해 수행되며 하드웨어(MMU)의 지원이 필요하다.
   - <span style="color:#9fb584">**효율적인 메모리 참조(논리 <-> 물리 주소 변환)**</span> 관리가 필요하다.
-  - 프로세스가 메모리 주소를 직접 참조하는 것이 아닌<span style="color:#9fb584">** 프로세스의 주소 공간과 메모리의 주소 공간을 구분**</span>하고 있기 때문에 빠르게 메모리 주소를 참조할 수 있는 관리 방법이 필요하다.
+  - 프로세스가 메모리 주소를 직접 참조하는 것이 아닌<span style="color:#9fb584">**프로세스의 주소 공간과 메모리의 주소 공간을 구분**</span>하고 있기 때문에 빠르게 메모리 주소를 참조할 수 있는 관리 방법이 필요하다.
 - 프로그램의 <span style="color:#9fb584">**실행이 종료될 때까지 메모리를 가용한 상태로 유지 및 관리하는 기능**</span>이다.
   - 프로그램 실행 중 메모리가 꽉 차게 되면 시스템의 속도가 느려지고 멈추는 현상이 발생한다.
 
@@ -71,7 +71,7 @@ mermaid: true
 - <span style="color:#9fb584">**많은 Static Library를 앱에 링크하면 큰 Excutable File이 생성**</span>된다.
   - Excutable File 내부에 Static Library 코드가 복사되기 때문이다.
   - 동일한 Static Library를 여러 프레임워크 또는 프로그램에서 사용할 경우 <span style="color:#9fb584">**메모리에 중복되어 적재**</span>된다.
-  - 큰 Excutable File은<span style="color:#9fb584">** 느린 시작 시간(Launch Time)과 큰 메모리 공간을 차지**</span>한다.
+  - 큰 Excutable File은<span style="color:#9fb584">**느린 시작 시간(Launch Time)과 큰 메모리 공간을 차지**</span>한다.
 - 앱 코드 내 <span style="color:#9fb584">**Heap 영역에 상주**</span>한다.
 - 빌드 속도가 느리지만, 런타임 속도가 빠르다.
 - Static Library가 업데이트되면 클라이언트 앱은 개발자가 <span style="color:#9fb584">**업데이트된 라이브러리와 다시 링크하지 않는 이상 업데이트된 기능을 사용할 수 없다.**</span>

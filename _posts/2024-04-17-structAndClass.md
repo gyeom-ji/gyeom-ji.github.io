@@ -11,9 +11,9 @@ mermaid: true
 
 Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming)**</span>를 위한 필수 요소로, 프로그램의 코드를 추상화하기 위해 사용한다. 프로퍼티와 메서드를 하나의 패키지에 구조화시켜 사용할 수 있으며, 이를 새로운 사용자 정의 타입으로 추상화하는 개념이다.
 
->💡  <span style="font-size: 15px"> instance : 클래스, 구조체에서 생성된 **객체** <br />
+>💡  <span style="font-size: 15px"> instance : 클래스, 구조체에서 생성된 **객체**<br />
 > 　 　property : 클래스, 구조체의 객체에 들어있는 **정보, 값**<br />
-> 　 　method : 클래스, 구조체 객체에 들어있는 **함수** </span>
+> 　 　method : 클래스, 구조체 객체에 들어있는 **함수**</span>
 
 ## Struct와 Class의 성능에 영향을 주는 요소
 
