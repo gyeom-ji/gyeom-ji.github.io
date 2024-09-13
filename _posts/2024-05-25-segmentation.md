@@ -15,13 +15,15 @@ mermaid: true
 
 ---
 
-- 세그먼테이션은 프로세스를 <span style="color:#9fb584">**논리적 단위(Segment)로 나눠 메모리에 배치**</span>한다.
+- 세그먼테이션은 프로세스를 <span style="color:#9fb584">**논리적 단위(Segment)로 나눠 메모리의 임의 위치에 적재**</span>한다.
   - 페이징은 프로세스를 물리적으로 일정한 크기(Page)로 나눠서 메모리에 할당한다.
 - 프로세스를 세그먼트 집합으로 만들고, 각 <span style="color:#9fb584">**세그먼트의 크기는 일반적으로 같지 않다.**</span>
   - 프로세스를 Code, Data,Stack 으로 나누는 것 역시 세그먼테이션의 모습이다.
   - Code, Data,Stack 각각 내부에서 더 작은 세그먼트로 나눌 수도 있다.
   - method, procedure, function, object, variables, stack 등 함수단위로 나눌 수 있다.
   - C컴파일러 관점에서는 코드, 전역 변수, 힙, 스택, 표준 C 라이브러리 단위로 구분지어 나눌 수 있다.
+- segment 유형에 따라 서로 다른 code sharing, protection이 가능해진다. 
+- segment 길이는 가변적이므로 동적 할당 기법을 사용한다.
 - 세그먼트를 <span style="color:#9fb584">**메모리에 할당할 때는 페이지를 할당하는 것과 동일하지만, 세그먼트 테이블을 사용**</span>한다.
 - 세그먼트 테이블은 <span style="color:#9fb584">**세그먼트 번호와 시작 주소(Base), 세그먼트 크기(Limit)**</span>을 엔트리로 가진다.
 - 주소 변환도 페이징과 유사하다.

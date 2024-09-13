@@ -15,6 +15,7 @@ mermaid: true
 ---
 
 - 운영체제의 핵심 기능 중 하나로, 프로그램이 실행되려면 주기억장치에 적재되어야 하기 때문에 <span style="color:#9fb584">**제한된 주기억장치의 효율적인 사용(할당)이 목적**</span>이다.
+  - CPU는 main memory와 CPU 내의 register만을 직접 접근한다.
   - <span style="color:#9fb584">**가능한 많은 프로세스를 적재하는 효율적인 메모리 할당**</span> 해야 한다.
   - 너무 적은 수의 프로세스는 CPU를 `유휴(idle)` 상태로 만들 수 있다.
     > 유후 idle : 컴퓨터 시스템이 사용 가능한 상태이나 실질적인 작업이 없는 시간.
@@ -140,7 +141,7 @@ mermaid: true
 <br/>
 <br/>
 
-###  3. 스와핑 Swapping
+### 스와핑 Swapping
 
 ---
 
@@ -156,14 +157,17 @@ CPU에서 실행 하다가 입출력 요청이나 인터럽트를 받게 되면 
 
 - 스왑 영역 Swap Space : 프로세스 이미지가 내려가는 하드디스크의 일부 영역
 - Swap-In : Swap Space의 프로세스 이미지를 메모리로 Load하는 것
-- Swap-Out : ready, waiting 상태인 프로세스 중 하나를 메모리에서 Swap Space로 내리는 것
+- Swap-Out : ready, waiting 상태인 프로세스 중 하나를 메모리에서 Swap Space(backing store)로 내리는 것
 - Swap-Out 된 프로세스는 다시 Swap-In 을 할 때 <span style="color:#9fb584">**이전의 메모리 주소 공간이 아닌 새로운 주소 공간으로 갈 수도 있다.**</span>
   - 해당 프로세스가 스왑 영역에 있는 동안 다른 프로세스가 해당 주소 공간을 사용할 수 있기 때문이다.
   - <span style="color:#9fb584">**MMU 의 재배치 레지스터로 인해 어디에 적재되는지 상관없이 정상적으로 수행**</span>할 수 있다.
 - 프로세스의 크기가 커지고 하드디스크는 메인 메모리보다 속도 면에서 느리기 때문에 Swapping 동작의 오버헤드는 크다고 볼 수 있다.
+- victim process의 선정 방법이다.
+- 실행시간 주소 바인딩이 요구된다.
+- 문맥 교환 시간이 많이 증가한다.
 
 > 스왑되어 들어오는 주소 = <span style="color:#9fb584">**실행 시간 주소 바인딩**</span><br/>
-> 프로세스는 프로세스의 이미지 형태로 내려갔지만, 메모리상에 존재하는 데이터가 아니기 때문에 다시 메모리상에 올라올 때 주소의 바인딩이 일어나야 한다. 즉, 실행 시간에 동적으로 주소 바인딩이 일어나야 한다.
+> 프로세스는 프로세스의 이미지 형태로 내려갔지만, 메모리상에 존재하는 데이터가 아니기 때문에 다시 메모리상에 올라올 때 주소의 바인딩이 일어나야 한다. 즉, <span style="color:#9fb584">**실행 시간에 동적으로 주소 바인딩**</span>이 일어나야 한다.
 
 <br/>
 
@@ -173,6 +177,7 @@ CPU에서 실행 하다가 입출력 요청이나 인터럽트를 받게 되면 
 
 - 메인 메모리에서 일어나는 것이 아닌 <span style="color:#9fb584">**CPU의 레지스터에서 일어나는 과정**</span>이다.
 - <span style="color:#9fb584">**하나의 프로세스가 CPU를 사용 중인 상태에서 다른 프로세스가 CPU를 사용하도록 하기 위해 이전의 프로세스 상태(문맥)을 보관하고 새로운 프로세스의 상태를 적재**</span>하는 작업이다.
+- CPU가 새로운 프로세스로 전환될 때 kernel은 이전 프로세스 상태를 저장하고, 새 프로세스를 위해 저장된 상태를 로드한다.
 - CPU를 선점하고 있던 프로세스는 프로세스 문맥을 PCB에 저장하고, 새롭게 CPU를 할당받을 프로세스는 PCB로부터 예전에 저장했던 자신의 상태를 실제 하드웨어로 복원한다.
 - <span style="color:#9fb584">**문맥 교환 중에는 CPU가 다른 작업을 할 수 없기 때문에 문맥 교환에 쇼요되는 시간을 오버헤드**</span>라한다.
   - [ 오버헤드 해결 방안 ]<br/>
@@ -236,23 +241,120 @@ CPU에서 실행 하다가 입출력 요청이나 인터럽트를 받게 되면 
 <br/>
 <br/>
 
-###  4. 연속 메모리 할당
+
+### MMU (Memory Management Unit) 
+
+---
+
+<span style="color:#9fb584">**CPU가 메모리에 접근하는 것을 관리하는 컴퓨터 하드웨어 부품으로 가상 메모리 주소를 실 메모리 주소로 변환하는 장치**</span>이다. 하드웨어 장치인 MMU를 사용하는 이유는 소프트웨어 방식보다 하드웨어 장치가 주소 변환이 더 빠르기 때문이다.
+
+- 가상(논리) 주소 : 프로세스가 참조하는 주소
+- 물리 주소 : 실제 메모리 RAM 주소
+
+
+![mmu](/assets/img/mmu.png)
+
+
+<br/> 
+<br/> 
+
+
+###  기억장치관리 요구 사항
+
+---
+
+#### 1. 재배치(relocation)를 지원해야 한다.
+
+- 프로그램은 (최초 적재, swapping 시) <span style="color:#9fb584">**임의 위치에 적재 가능**</span>해야한다.
+  - <span style="color:#9fb584">**상대 주소가 있는 재배치 가능한 적재 모듈**</span>
+  - 일이 메모리의 어느 위치에 로드되는지 알 수 없기 때문에 임의의 주소에서도 문제없이 수행 가능하도록 하는 것이다.
+    - 일이 항상 0번지에 로드된다고 가정하고 주소 값(논리 주소)을 계산한다.
+    - 실제 메모리에 로딩될 때는 베이스 레지스터(relocation(base) register)에 저장된 값을 더하여 물리 주소를 계산한다.
+    - 메모리 보호와 메모리 재배치를 성공적으로 수행하기 위해 MMU가 서포트 한다.
+- <span style="color:#9fb584">**동적 주소 바인딩이 요구**</span>된다.
+  - <span style="color:#9fb584">**주소 바인딩 : 논리 주소 ➡️ 물리 주소**</span>
+  - 초기 적재 시간(load time)에 Relocating loader에 의하여
+  - 실행 시간(excution time)에  MMU에 의하여
+
+![dynamicRelocationUsingRelocationRegister](/assets/img/dynamicRelocationUsingRelocationRegister.png)
+
+
+#### 2. 보호(protection)를 지원해야 한다.
+
+- 프로세스는 오직 <span style="color:#9fb584">**자신의 주소공간(Address Space)만 접근**</span> 해야한다.
+  - 프로세스들은 기본적으로 <span style="color:#9fb584">**상호 독립적**</span>이기 때문이다.
+
+![precossAddressSpace](/assets/img/precossAddressSpace.png)
+
+- 주소검사는 <span style="color:#9fb584">**실행 중 H/W**</span>에 의해 수행된다.
+  - 어떤 일이 다른 일이나 OS 영역을 침범하여 발생하는 문제를 막는 것이다.
+    - 일이 사용하는 메모리의 시작 주소를 base register에 저장한다.
+    - 일이 사용하는 메모리의 크기를 경계 레지스터(limit register)에 저장한다.
+    - 현재 접근하려는 주소의 값이 베이스 값과 베이스 + 경계 값 사이에 있는지 확인한다.
+  - 프로그램은 실행 중 재배치가 가능하므로 컴파일 시 불법 주소 탐지는 불가능하다.
+
+![hardwareAddressProtectionWithBaseAndLimitRegisters](/assets/img/hardwareAddressProtectionWithBaseAndLimitRegisters.png)
+
+#### 3. 공유(sharing)를 지원해야 한다.
+
+- 공유 자원(shared data, shared library) 접근이 가능해야 한다.
+
+#### 4. 프로그램의 논리적 구조를 지원해야 한다.
+
+- 하나의 프로그램은 여러개의 모듈로 구성된다.
+  - ex) code module, library routine, data module
+- OS와 하드웨어는 프로그램 모듈을 지원해야한다.
+  - 모듈 유형에 따라 다른 보호 기법, 공유 등의 지원
+- Segmentation 기법이 프로그램 모듈을 잘 지원한다.
+
+
+#### 5. 기억장치의 물리적 구조를 지원해야 한다.
+
+- Memory Hierarchy : Registers — Cache memory — Main memory — 보조기억장치
+- <span style="color:#9fb584">**주기억장치와 보조기억장치 간 정보(process, page, segment) 이동을 관리**</span>해야 한다. (메모리 관리의 핵심)
+
+
+<br/>
+<br/>
+
+###  3. 연속 메모리 할당
 
 ---
 
 - 각 프로세스를 하나의 <span style="color:#9fb584">**연속된 메모리 공간에 저장**</span>하는 방법이다.
+  - 논리 주소 : CPU가 생성하는 주소
+  - 물리 주소 : MMU에 의해 일련의 변환 과정을 거친 실제 메모리 주소
+![logicalPhysicalAddress](/assets/img/logicalPhysicalAddress.png)
+
+
 - <span style="color:#9fb584">**디스크에 있는 프로세스를 주기억장치의 어느 위치에 저장할 것인지 결정**</span>한다.
 
 <br/>
 
+#### MMU의 메모리 보호 / 재배치 
+
+![logicalPhysicalAddress](/assets/img/mmuLimitRelocationRegister.png)
+
+- CPU 스케줄링 시 Dispatcher는 문맥 교환을 수행하며 이때 두 register의 값을 설정한다.
+
+<br/>
+
+
 #### 1) 고정 분할 기법 Fixed Partitioning
 
 - <span style="color:#9fb584">**프로세스의 크가와 상관 없이 메모리를 여러 개의 파티션으로 나눠 관리**</span>하는 방식이다.
-- 각 파티션에 하나의 프로세스를 저장한다.
-- 메모리를 일정한 크기로 나눠 관리하기 때문에 <span style="color:#9fb584">**메모리 관리가 수월**</span>하다.
+- <span style="color:#9fb584">**각 파티션에 하나의 프로세스를 저장**</span>한다.
+- 파티션의 개수 = Multiprogramming Degree
+  > 멀티프로그래밍 차수 Multiprogramming Degree : 현재 메인 메모리에 존재하는 활성화된 일(active job)의 개수 (수행 시작은 했지만 종료는 되지 않는 것)
+- <span style="color:#9fb584">**메모리를 일정한 크기로 나눠 관리하기 때문에 메모리 관리가 수월**</span>하다.
   - 메모리 통합과 같은 부가적인 작업이 필요없다.
+  - 프로그램이 적재되고 남은 공간에 다른 프로그램을 적재하여 수행하므로 프로세서와 기억장치 같은 자원의 활용도를 향상시킨다.
+  - 동시에 여러 프로그램을 주기억장치에 적재하여 수행하는 <span style="color:#9fb584">**다중 프로그래밍 기법이 가능**</span>하다.
 - 메모리가 미리 나눠져 있기 때문에 융통성이 없고 <span style="color:#9fb584">**내부 단편화가 발생**</span>한다.
   - 일정하게 나눠진 공간보다 작은 프로세스가 올라올 경우 메모리 낭비가 발생한다.
+- Equal-size, Unequal-size partitioning이 있다.
+- Equal-size partitioning : First available partition 선택
+- Unequal-size partitioning : Best-fit partition 선택
 
 <br/>
 <br/>
@@ -262,8 +364,11 @@ CPU에서 실행 하다가 입출력 요청이나 인터럽트를 받게 되면 
 - 시작시, 모든 메모리가 가용한다. (하나의 큰 파티션)
 - <span style="color:#9fb584">**프로세스의 크기에 따라 요구된 만큼 메모리를 분할하여 할당**</span>한다.
   - 프로세스를 한 덩어리로 처리하여 하나의 프로세스를 연속된 메모리 공간에 적재한다.
+  - 주기억장치 내에 새로운 프로그램이 들어올 때마다 그 프로그램의 크기에 맞춰 <span style="color:#9fb584">**가변적으로 기억 공간을 분할**</span>하여 프로그램에 맞는 공간만을 할당한다.
 - <span style="color:#9fb584">**메모리 통합 등의 부가적인 작업이 필요하기 때문에 메모리 관리가 복잡**</span>하다.
-  - 파티션 반환시 인접한 빈 파티션들을 합쳐야한다.
+  - 파티션 반환시 인접한 빈 파티션들을 합쳐야한다.(Merging)
+
+![variablePartitioning](/assets/img/variablePartitioning.png)
 
 <br/>
 
@@ -320,13 +425,22 @@ CPU에서 실행 하다가 입출력 요청이나 인터럽트를 받게 되면 
 
 #### 단편화 해결 방법 
 
+- 페이징 Paging
+- 세그멘테이션 Segmentation
 - 통합 Coalescing
   - 인접한 단편화 영역을 찾아 하나로 통합하는 기법이다.
 - 압축 Compaction
-  - 메모리의 모든 단편화 영역(Hole)을 하나로 압축하는 기법이다.
+  - 주기억장치를 검사하여 모든 단편화 영역(Hole)을 하나의 커다란 Hole으로 만드는 방법이다.
+  - 운영체제는 사용중인 블록을 한데 모으고, 비어있는 기억장소를 하나의 커다란 공백으로 만든다.
+  - 기억 장소에 분산되었던 공간들을 한 곳에 모음으로써 사용 가능한 큰 영역을 만들 수 있다.
+    - 이를 통해 기억 장소의 낭비를 줄일 수 있다.
   - Hole을 옮기는 오버헤드가 크고 어느 Hole을 옮겨야 빠르게 합칠 수 있는지에 대한 최적 알고리즘이 존재하지 않는다는 단점이 있다.
-- 페이징 Paging
-- 세그멘테이션 Segmentation
+    - 기억장소를 집약하는 동안 전체 시스템은 지금까지 수행해 오던 일들을 일단 중지해야 하며, 집약을 위하여 많은 시간이 소모된다.
+    - 수행 중이던 프로그램과 데이터를 주기억장치 내의 다른 장소로 이동시키기 때문에 각각의 위치 및 이에 관계되는 내용을 수정(주소 관련)해야 한다.
+
+  ![memoryCompaction](/assets/img/memoryCompaction.png)
+
+
 
 
 <br/>

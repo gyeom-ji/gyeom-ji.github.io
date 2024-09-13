@@ -17,6 +17,7 @@ mermaid: true
 
 - 다른 프로세스에게 <span style="color:#9fb584">**영향을 주거나, 다른 프로세스로부터 영향을 받는 프로세스**</span>이다.
 - 협력적 프로세스들은 보통 <span style="color:#9fb584">**자원을 공유하며, 동시에 접근**</span>한다.
+  - ex) 생산자 소비자 문제
 - 협력적 프로세스들은 서로 영향을 미치기 때문에<span style="color:#9fb584">**데이터나 흐름에 대한 동기화가 매우 중요**</span>하다.
   - 프로세스 사이에 동기화 하는 것을 <span style="color:#9fb584">**프로세스 동기화 (Process Synchronization)**</span>라고 한다.
 - 경쟁 상황(Race Condition)이 발생하면 공유 자원을 신뢰할 수 없게 만들 수 있다.
@@ -31,8 +32,29 @@ mermaid: true
 
 - 협력하는 프로세스 사이에서 <span style="color:#9fb584">**공유자원의 일관성(Consistency) 유지를 위해 프로세스 간 실행 순서를 제어**</span>하는 것이다.
   - <span style="color:#9fb584">**순차 접근과 동일한 결과**</span>를 산출하도록 실행 순서를 제어해야 한다.
+    - ex) 생산자 소비자 문제
+      - 생산자는 shared buffer에 item을 put(write)하며 소비자는 shared buffer에서 item을 get(read)한다.
 - 협력 프로세스가 공유 자원을 사용하는 상황에서, 경쟁 상황이 발생하면 공유 자원을 신뢰할 수 없게 만들 수 있는데, 이를 방지하기 위해 프로세스들이 공유 자원을 사용할 때 특별한 규칙을 만드는 것이다.
 - 동기화 유형에는 경쟁적(Competitive), 협력적(Cooperative) 동기화가 있다.
+
+<br/> 
+
+### Mutual Exclution 상호 배타적 접근
+
+- 한 순간 <span style="color:#9fb584">**오직 하나의 프로세스**</span>만이 공유 자원에 접근한다.
+
+<br/> 
+
+### Coordination: Wait & Signal 협력 or 조정
+
+- Wait (대기)
+  - 버퍼가 full일 때 생산자는 대기한다.
+  - 버퍼가 empty일 때 소비자는 대기한다.
+- Signal or Notify (통지)
+  - put item 후 not empty 임을 소비자에게 통지한다.
+  - get item 후 not full 임을 생산자에게 통지한다.
+
+<br/> 
 
 <br/> 
 <br/> 
@@ -50,8 +72,8 @@ mermaid: true
     - 독자가 글을 읽고 있다면 독자는 추가적으로 글을 읽을 수 있지만 저자는 글을 쓸 수 없다.
     - 저자가 글을 쓰고 있다면 독자는 글을 읽을 수 없으며 저자도 추가적으로 글을 쓸 수 없다.
     - Critical Section : 책(공유 데이터베이스)
-3. 생상자 소비자 문제 Producer Consumer Problem (Bounded Buffer Problem)
-    - 생산자는 물건을 생산하여 창고(버퍼)에 넣고, 소비자는 창고에서 물건을 꺼내 소비한다.
+3. 생산자 소비자 문제 Producer Consumer Problem (Bounded Buffer Problem)
+    - 생산자는 물건을 생산하여 창고(shared buffer)에 넣고(put(write)), 소비자는 창고에서 물건을 꺼내 소비한다(get(read)).
     - 창고가 가득 차면 생산자는 물건을 넣을 수 없고, 창고가 비어 있으면 소비자는 물건을 소비할 수 없다.
     - Critical Section : 창고(버퍼)
 4. 식사하는 철학자 문제 Dining Philosopher Problem
@@ -67,10 +89,14 @@ mermaid: true
 
 ---
 
+![criticalSection](/assets/img/criticalSection.png)
+
 - <span style="color:#9fb584">**Critial Section**</span> : 둘 이상의 스레드가 동시 실행될 경우 경쟁 상황을 발생시킬 수 있는 코드 영역(<span style="color:#9fb584">**공유 자원을 접근하는 코드 영역**</span>)
 - 한 프로세스가 자신의 임계구역 내에 있을 때 다른 프로세스들은 자신들의 임계구역으로 들어갈 수 없다.
 - <span style="color:#9fb584">**Critial Section Problem**</span> : <span style="color:#9fb584">**임계구역 전후에서 프로세스간 협력 규약을 설계하는 것**</span>이다.
 - Critial Section Problem의 해결 방안은 <span style="color:#9fb584">**3가지 요구 조건을 충족**</span>해야한다.
+
+<br/> 
 
 ### 임계 구역 문제 해결방안 3가지 충족 조건
 
@@ -114,11 +140,24 @@ mermaid: true
   - unlock: 현재의 임계 구역을 모두 사용했음을 알린다. 대기중인 다른 프로세스/스레드가 임계 구역에 진입할 수 있다(exit section).
 - 자원에 접근하기 위해 각 프로세스는 락을 획득하여 접근 허용 권한을 얻어야 한다.
 - 한 프로세스가 접근 권한을 허용 받으면 다른 프로세스는 락이 반환되기 전까지 자원 사용이 불가능하다.
-  - 프로세스는 lock이 반환될 때까지 spin한다.
+  - <span style="color:#9fb584">**프로세스는 lock이 반환될 때까지 spin**</span>한다.
     > Spin : 다른 스레드가 lock을 소유하고 있다면 그 lock이 반환될 때까지 계속 확인하며 기다리는 것이다. (Busy waiting)
-- 프로세스들이 짧게 lock을 소유하는 경우에 적용한다.
 - 다중 처리기 시스템에 적용한다.
   - 한 처리기에서 스레드가 임계구역을 실행하는 동안 다른 처리기에서 다른 스레드는 spin한다.
+- 상호 배제 문제는 해결할 수 있으나, deadlock 과 유한대기(기아)문제는 해결하지 못한다.
+
+<br/> 
+
+### Busy Waiting
+
+- 현재 lock을 얻을 수 없다면 CPU를 보유한 상태에서 계속 lock을 얻을 수 있는지 확인하며 기다린다.
+  - while 문에서 대기하는 동안 CPU를 의미 없이 계속해서 점유하며 다른 thread에게 CPU를 양보하지 않는다.
+  - 권한 획득을 위해 많은 CPU를 낭비한다.
+- 프로세스들이 짧게 lock을 소유하는 경우 Context Switching이 일어나지 않아 효율적이다.
+- lock을 점유하는 시간이 길다면 CPU를 오랜 시간 점유하고 있기 때문에 효율성이 떨어진다.
+- 하나의 CPU / Single Core의 경우에는 Busy Waiting이 효율적이지 않다.
+- critical section이 매우 짧거나, context switching이 빈번하게 일어날 것 같다면 busy waiting이 효율적이다.
+
 
 <br/> 
 
@@ -165,9 +204,10 @@ do {
   - S == 0 : 가용한 자원이 없음 (자원에 접근할 수 없도록 Block)
   - S > 0 : S개 자원이 가용함 (접근함과 동시에 세마포어의 값을 1 감소)
   - S < 0 : 기다리고 있는 프로세스의 개수
+- 세마포어 값에 따라 OS는 프로세스가 즉시 자원을 사용할지, 다른 프로세스가 사용 중이라면 기다리게 할지 선택한다.
 - 세마포어의 종류는 이진형 세마포어 Binary Semaphore와 계수형 세마포어 Counting Semaphore가 있다.
   - Counting Semaphore : unbounded domain 유한 개의 공유 자원 접근시 사용한다.
-  - Binary Semaphore (≈ Mutex): domain = {0, 1} 1개의 공유 자원을 상호배제한다.
+  - Binary Semaphore (≈ Mutex): domain = {0, 1} 1개의 공유 자원을 상호배제한다. (Mutual exclusion 상호 배제 보장 시 사용)
 - 세마포어는 변수 S와 P연산, V연산으로 구성되어 있다.
   - S는 일반적으로 정수형 변수를 사용한다.
   - S는 P, V 명령에 의해서만 접근할 수 있다.
@@ -209,10 +249,6 @@ do {
 }
 
 ```
-
-- 아무것도 하지 않는 빈 반복문을 계속 돌다가 임계 구역에 진입할 수 있을 때 진입하는 방식이다.
-- 빈 반복문을 반복하기 때문에 계속적으로 Context Switching이 발생하며 이로 인하여 단일처리 다중프로세스 환경에서 처리 효율이 떨어진다.
-- 어떤 프로세스가 먼저 임계 구역에 진입을 할 수 있을지에 대한 처리를 할 수 없다는 단점도 존재한다.
 
 <br/>
 
@@ -258,9 +294,12 @@ func V(s: Int) {
   - wait, signal 내부코드는 분리 실행되지 않고 완전히 실행되게 해야 한다. (즉, atomicity가 보장되어야 한다)
   - wait(), signal()의 atomicity는 interrupt disabling으로 해결 가능하다.
   - starvation과 deadlock이 발생할 수 있다.
-- 일반적으로 CPU 소모를 줄이는 Block-WakeUp 방식이 좋지만, Block-WakeUp 방식은 프로세스를 Wakeup하는 과정에서 발생하는 오버헤드가 존재한다.
+    - LIFO 대기 큐에서의 deadlock
+- 일반적으로 CPU 소모를 줄이는 Block-WakeUp 방식이 좋지만, Block-WakeUp 방식은 문맥 교환하면서 발생하는 오버헤드가 존재한다.
+  - 자원 여분이 없을 경우 프로세스 상태를 ready ➡️ blocked 상태로 문맥 교환
+  - 여분이 생길 경우 blocked ➡️ ready 상태로 문맥 교환
 - 임계 구역 길이가 길 경우 Block-WakeUp
-- 임계 구역 길이가 매우 짧을 경우 Busy Waiting 
+- 임계 구역 길이가 매우 짧을 경우 Busy Waiting
 
 <br/>
 <br/>

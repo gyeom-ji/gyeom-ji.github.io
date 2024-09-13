@@ -67,9 +67,16 @@ mermaid: true
 
 ### 선점 스케줄링 Preemptive Scheduling
 
+- 우선 순위가 높은 프로세스가 현재 프로세스를 중지시키고 자신이 CPU를 점유한다.
 - 현재 실행 중인 프로세스가 OS에 의해 중단되고 준비 상태로 전환된다.
+  - 프로세스 자신의 cpu burst 완료 전 OS에 의해 선점될 수 있다.
 - 우선순위를 가지는 시분할 처리, 실시간 처리에 유용하다.
-- 문맥 교환과 같은 부가적인 작업으로 인한 자원의 낭비가 있다.
+- 응답 시간(처리 시간)을 예측하기 힘들다.
+- 선점으로 인해 문맥 교환과 같은 부가적인 작업으로 overhead가 많이 발생한다.
+- RR, 선점 우선순위, 다단계 큐, 다단계 피드백 큐
+
+#### 선점 스케줄링의 Overhead
+
 - 공유 데이터 접근 중 선점시 프로세스 동기화가 필요하다.
 - kernel mode에서 선점 시 시스템 호출 완료 후 선점된다.
 
@@ -77,10 +84,13 @@ mermaid: true
 
 ### 비선점 스케줄링 Non-Preemptive Scheduling
 
-- 프로세스가 종료(Terminated)되거나, 자체적으로 대기(Waiting)상대로 전환된 경우를 제외하고 실행 중인 프로세스가 계속 실행된다.
-- 프로세스 스스로 CPU를 반환할 때 스케줄링이 일어난다.
+- cpu가 한 프로세스에 할당되면 프로세스가 종료(Terminated)되거나, 자체적으로 대기(Waiting)상대로 전환된 경우를 제외하고 실행 중인 프로세스가 계속 실행된다.
+- 응답 시간 예측이 용이하다.
+- <span style="color:#9fb584">**프로세스 스스로 CPU를 반환할 때**</span> 스케줄링이 일어난다.
+- FCFS(FIFO), SJF, 우선순위
 - 짧은 작업이 긴 작업이 끝날 때까지 기다려야하는 문제점(Convoy Effect)가 발생할 수 있다.
 > Convoy Effect: 하나의 큰 프로세스가 자원을 오랜 시간 독점하는 동안 작은 프로세스들이 자원을 할당받지 못하는 현상이다. 우선 순위가 같다고 가정했을 때 작은 프로세스들이 사용하고 그 다음 큰 프로세스가 사용하는 것이 성능상 유리하다.<br/>예시 ) 많은 I/O-bound 프로세스 앞에 CPU-bound 프로세스가 실행 중이다.
+
 
 
 <br/> 
@@ -244,6 +254,74 @@ mermaid: true
 
 - 큐 간 스케줄링은 다단계 큐 스케줄링과 동일하다.
   - process는 최우선 큐에 배정된 후 자신의 CPU burst 특성에 따라 하위 큐로 이동한다. (Dynamic Priority)
+
+<br/>
+
+## 다중 처리기 스케줄링
+
+---
+
+- 두 가지 스케줄링 방법이 있다.
+
+<br/>
+
+### 1. 비대칭 다중처리 Asymmetric Multiprocessing 
+
+- 하나의 처리기(Master Server)가 스케줄링, 입출력, 시스템 행위를 수행하고 나머지 처리기들은 User Code만 실행한다.
+
+<br/>
+
+### 2. 대칭 다중처리 Symmetric Multiprocessing
+
+- 각 처리기는 독자적으로 스케줄링을 수행한다.
+- Global Ready Queue
+  - 단일 시스템 전체 (A single system-wide) ready queue
+  - 한 프로세스를 여러번 선택하기 때문에 프로세스 유일이 발생할 수 있다.
+- Private Ready Queue
+  - 프로세서 별 (Per-processor) ready queue
+  - 처리기 간 부하 불균형이 발생할 수 있다.
+- 거의 모든 운영체제에서 사용한다.
+
+<br/>
+
+### SMP(Symmetry Multi Processor)에서의 이슈
+
+#### 1. Processor Affinity 처리기 친화성
+
+- 하나의 프로세스가 하나의 처리기에서 실행되도록 시도하는 것이다.
+- 프로세스 이주를 불허한다. (Hard affinity 강한 친화성) 
+- 노력하지만 보장하지 못한다. (Soft affinity 약한 친화성)
+
+#### 2. Load Balancing 부화 균등화
+
+- Private ready queue 방식에서 처리기 간 부하 균등을 시도하는 것이다.
+- Push migration
+  - 특정 process가 주기적으로 모든 처리기의 부하를 검사하고, 과부하 처리기의 프로세스들을 부하가 적은 처리기로 보낸다.
+- Pull migration
+  - idle 처리기가 busy 처리기의 프로세스를 자신에게 가져온다.
+- 처리기 친화성과 상충된다.
+  - 항상 pull (balancing 우선) vs. (불균형>임계치) 경우 이주 (affinity 우선)
+
+#### 3. Multi-core Multiprocessor에서의 스케줄링
+
+- Multicore Processor에서의 메모리 멈춤(Memory Stall)
+  - 여러 core가 하나의 메모리를 사용(접근)하므로 코어가 메모리 접근 시 오랫동안 기다리는 상황(memory stall)이 발생한다.
+  - core(CPU) time이 낭비된다.
+
+![memoryStall](/assets/img/memoryStall.png)
+
+- Multi-threaded Multi-core system
+  - 하나의 코어가 여러 H/W thread를 가지며 하나의 H/W thread는 하나의 S/W thread를 실행한다.
+  - Interleaved multi-threading (File-grained multi-threading)
+    - 하나의 코어가 여러 S/W thread를 번갈아 실행한다. (time sharing)
+    - ex) thread0이 메모리 접근 시 thread1이 실행된다.
+    - 다중 코어 처리기에서의 memory stall 문제가 해결된다.
+
+![interleavedMultiThreading](/assets/img/interleavedMultiThreading.png)
+
+> 다중스레드 다중코어 시스템에서의 스케줄링<br/>
+> ① Scheduler가 각 H/W thread 상에서 실행될 S/W thread를 선정한다.<br/>
+> ② Core(thread selection logic)가 다음 실행할 H/W thread를 결정한다.<br/>
 
 <br/>
 <br/>
