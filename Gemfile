@@ -27,3 +27,5 @@ gem "webrick", ">= 0"
 gem "faraday-retry", "~> 2.2"
 
 gem "rexml", "~> 3.3"
+
+#gem "jekyll", github: "jekyll/jekyll", ref: "refs/pull/9248/head"
