@@ -58,45 +58,70 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
 
 ---
 
-![memory](/assets/img/memory.png)
+![memoryStructure](/assets/img/memoryStructure.png)
 
 프로그램이 실행되면 OS는 메모리(RAM)에 해당 프로그램을 위한 공간을 할당해준다. 메모리에는 Code, Data, Stack, Heap 4가지 영역이 존재한다.
 
-- <span style="color:#9fb584">**Code**</span> 영역은 앱이 실행해야 할 프로그램의 코드를 저장한다.
-  - <span style="color:#9fb584">**소스 코드가 기계어 형태로 저장**</span>된다.
-  - <span style="color:#9fb584">**컴파일 타임에 결정되고, 중간에 코드가 변경되지 않도록 Read-Only**</span> 형태로 저장된다.
+### Code 영역
+
+- <span style="color:#9fb584">**Code**</span> 영역은 앱이 <span style="color:#9fb584">**실행해야 할 프로그램의 코드를 기계어 형태로 저장**</span>한다.
+- CPU는 코드 영역에 저장된 명령을 하나씩 가져가서 처리한다.
+- 프로그램이 시작되고 종료될 때까지 메모리에 계속 남아있는다.
+- <span style="color:#9fb584">**컴파일 타임에 결정되고, 중간에 코드가 변경되지 않도록 Read-Only**</span> 형태로 저장된다.
+- 시스템 콜이나 인터럽트 처리 루틴 코드
+  > `인터럽트` : 프로그램 실행 중 예기치 않은 상황이나 필요에 의해 실행중인 프로세스를 중단하고 OS에게 CPU 제어권을 넘겨 처리해야 하는 작업들<br/>
+  > `시스템 콜` : 일반 프로세스가 OS의 도움이 필요한 특권 명령(ex. I/O 요청)을 요청할 때 일으키는 인터럽트
+- CPU, 메모리 등의 자원 관리를 위한 코드
+- 편리한 인터페이스 제공을 위한 코드
   
 <br/>
 
-- <span style="color:#9fb584">**Data**</span> 영역은 프로그램의 전역 변수, 정적 변수(static)를 저장한다.
-    - 어디서든 접근 가능하며, 프로세스가 끝날때까지 유지된다.
-    - 프로그램 <span style="color:#9fb584">**시작과 동시에 할당되고, 프로그램이 종료 되어야 메모리가 해제**</span>된다.
-  
-    > <span style="color:#9fb584">**Swift에서 static은 기본 동작이 lazy**</span>이다. 모든 전역(global) 상수, 변수는 항상 lazy로 생성된다. Lazy Stored Property의 동작방식과 같지만, lazy 키워드가 필요 없다. 지역(local) 상수, 변수는 절대 lazy로 생성되지 않는다. static은 항상 전역으로 선언되기 때문에 lazy로 생성된다. 즉 <span style="color:#9fb584">**Swift에서 static변수는 Lazy Stored Property와 같이 초기값이 그 변수가 처음 사용될 때 계산**</span>된다. Lazy Stored Property와의 차이점은, 전역 변수는 <span style="color:#9fb584">**프로그램 시작과 동시에 메모리에 올라가고, 실 사용될 때 값이 초기화**</span>되지만, lazy property는 메모리에도 올라가지 않고, 실제 사용될 때 메모리에 올라가고 초기화된다.
+### Data 영역
 
-    - 실행 도중 변수 값이 변경될 수 있어 <span style="color:#9fb584">**Read-Write**</span>로 저장된다.
+- <span style="color:#9fb584">**Data**</span> 영역은 프로그램의 <span style="color:#9fb584">**전역 변수, 정적 변수(static)를 저장**</span>한다.
+- 어디서든 접근 가능하며, 프로세스가 끝날때까지 유지된다.
+- 프로그램 <span style="color:#9fb584">**시작과 동시에 할당되고, 프로그램이 종료 되어야 메모리가 해제**</span>된다.
+  
+> <span style="color:#9fb584">**Swift에서 static은 기본 동작이 lazy**</span>이다. 모든 전역(global) 상수, 변수는 항상 lazy로 생성된다. Lazy Stored Property의 동작방식과 같지만, lazy 키워드가 필요 없다. 지역(local) 상수, 변수는 절대 lazy로 생성되지 않는다. static은 항상 전역으로 선언되기 때문에 lazy로 생성된다. 즉 <span style="color:#9fb584">**Swift에서 static변수는 Lazy Stored Property와 같이 초기값이 그 변수가 처음 사용될 때 계산**</span>된다. Lazy Stored Property와의 차이점은, 전역 변수는 <span style="color:#9fb584">**프로그램 시작과 동시에 메모리에 올라가고, 실 사용될 때 값이 초기화**</span>되지만, lazy property는 메모리에도 올라가지 않고, 실제 사용될 때 메모리에 올라가고 초기화된다.
+
+- 실행 도중 변수 값이 변경될 수 있어 <span style="color:#9fb584">**Read-Write**</span>로 저장된다.
+- Data 영역은 BSS 영역과 Data(GVAR) 영역으로 나눠진다.
+- 초기화 된 데이터는 Data(GVAR) 영역에 저장되고, 초기화되지 않은 데이터는 BSS 영역에 저장된다.
+- BSS에는 초기값을 설정하지 않은 전역 변수와 정적 변수를 위한 영역으로 0으로 자동 초기화를 해준다.
+
+> BSS 영역과 Data(GVAR) 영역을 구분하는 이유 : 초기화 된 데이터는 초기 값을 저장해야 하므로 Data(GVAR) 영역에 저장되에 ROM에 저장된다. 하지만 초기화 되지 않은 데이터까지 ROM에 저장하면, 크기가 큰 ROM이 필요하고, 이는 비효율적이므로 초기화 되지 않은 데이터는 RAM에 저장하여 영역을 구분한다.
 
 <br/>
+
+### Stack 영역
+
 - <span style="color:#9fb584">**Stack**</span>은 일시적인 데이터를 저장하며, 하나의 명령어(pop, push)로 메모리를 할당, 해제할 수 있기 때문에 <span style="color:#9fb584">**매우 빠르고 효율적이다.**</span>
-    - 지역변수, 파라미터를 저장한다.
-    - 스택 영역의 데이터는 <span style="color:#9fb584">**CPU가 관리하고 최적화하기 때문에 메모리에 빈 공간이 발생하지 않는다.**</span>
-        - 함수 호출시 스택에 해당 함수에 해당하는 공간이 생기고, 함수 실행이 끝나면 사라진다.
-    - <span style="color:#9fb584">**컴파일 단계에서 생성과 해제를 알 수 있는 value type 인스턴스가 저장된다.**</span>
-        - 컴파일 시 크기가 결정된다.
-    - reference type 중에서도 크기가 고정되어있거나, 언제 지워야할지 컴파일러가 미리 예측 가능한 경우 가급적 stack을 사용해 성능을 향상시킨다.
+- 지역변수, 파라미터를 저장한다.
+- 높은 주소(위) -> 낮은 주소(아래)로 할당된다.
+- 스택 영역의 데이터는 <span style="color:#9fb584">**CPU가 관리하고 최적화하기 때문에 메모리에 빈 공간이 발생하지 않는다.**</span>
+  - 함수 호출시 스택에 해당 함수에 해당하는 공간이 생기고, 함수 실행이 끝나면 사라진다.
+- <span style="color:#9fb584">**컴파일 단계에서 생성과 해제를 알 수 있는 value type 인스턴스가 저장된다.**</span>
+  - <span style="color:#9fb584">**컴파일 시 크기가 결정**</span>된다.
+- reference type 중에서도 크기가 고정되어있거나, 언제 지워야할지 컴파일러가 미리 예측 가능한 경우 가급적 stack을 사용해 성능을 향상시킨다.
 
 <br/>
+
+### Heap 영역
+
 - <span style="color:#9fb584">**Heap**</span> 영역은 데이터를 지우기 전까지 반영구적으로 지속되며,  <span style="color:#9fb584">**스택에 비해서 속도가 느리다.**</span>
-    - 동적으로 할당되는 메모리 공간이며, 개발자가 할당 및 해제를 해줘야한다.
-    - <span style="color:#9fb584">**swift는 ARC (Automatic Reference Counting)로 메모리를 추적하고 관리한다.**</span>
-        - 컴파일 시 컴파일러가 메모리에서 해제하는 코드를 적절히 넣어준다.
-    - ARC는 힙 영역에서 사용하지 않은 블록을 찾아 메모리 할당을 처리하고, 해당 메모리를 적절한 위치로 다시 삽입하여 할당을 해제한다. 
-    - 여러 스레드가 동시에 힙에 메모리를 할당할 수 있기 때문에 locking, 기타 동기화 메커니즘을 통해 무결성을 보호해야 한다. (오버헤드로 이어짐)
-    - <span style="color:#9fb584">**컴파일 단계에서 생성과 해제를 알 수 없는 reference type 인스턴스가 저장된다.**</span>
-        - 인스턴스 자체는 힙에 저장하고, 힙의 주소값을 식별자와 함께 스택에 저장한다.
-        - 이 주소값을 이용해 실행 중 필요한 데이터를 가져올 수 있다.
-        - 런타임 시 크기가 결정된다.
-    - <span style="color:#9fb584">**value type 인 Array, Dictionary, Set, String 등은 최적화를 위해 heap공간을 같이 활용한다.**</span>
+- 동적으로 할당되는 메모리 공간이며, 개발자가 할당 및 해제를 해줘야한다.
+  - 유연성이 높다.
+- 낮은 주소(아래) -> 높은 주소(위)로 할당된다.
+- <span style="color:#9fb584">**swift는 ARC (Automatic Reference Counting)로 메모리를 추적하고 관리한다.**</span>
+  - 컴파일 시 컴파일러가 메모리에서 해제하는 코드를 적절히 넣어준다.
+- ARC는 힙 영역에서 사용하지 않은 블록을 찾아 메모리 할당을 처리하고, 해당 메모리를 적절한 위치로 다시 삽입하여 할당을 해제한다. 
+- 여러 스레드가 동시에 힙에 메모리를 할당할 수 있기 때문에 locking, 기타 동기화 메커니즘을 통해 무결성을 보호해야 한다. (오버헤드로 이어짐)
+- <span style="color:#9fb584">**컴파일 단계에서 생성과 해제를 알 수 없는 reference type 인스턴스가 저장된다.**</span>
+  - 인스턴스 자체는 힙에 저장하고, 힙의 주소값을 식별자와 함께 스택에 저장한다.
+  - 이 주소값을 이용해 실행 중 필요한 데이터를 가져올 수 있다.
+  - <span style="color:#9fb584">**런타임 시 크기가 결정**</span>된다.
+- <span style="color:#9fb584">**value type 인 Array, Dictionary, Set, String 등은 최적화를 위해 heap공간을 같이 활용한다.**</span>
+
 
 
 ## Reference Counting
