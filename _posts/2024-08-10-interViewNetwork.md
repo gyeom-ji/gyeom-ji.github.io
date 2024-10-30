@@ -316,7 +316,7 @@ mermaid: true
 - iOS에서는 네트워크 통신을 위한 다양한 라이브러리와 프레임워크를 제공한다.
   - URLSession, Alamofire 등
 - iOS에서는 보안 통신을 위해 주로 HTTPS를 사용한다. 
-  - iOS 9부터는 **App Transport Security (ATS)**가 도입되어 앱이 기본적으로 안전한 네트워크 연결(HTTPS)을 사용하도록 권장한다.
+  - iOS 9부터는 <span style="color:#9fb584">**App Transport Security (ATS)**</span>가 도입되어 앱이 기본적으로 안전한 네트워크 연결(HTTPS)을 사용하도록 권장한다.
 
 #### URLSession
 
@@ -372,6 +372,8 @@ mermaid: true
 </div>
 </details>
 
+<br/>
+
 - URLSession은 두 가지 종류로 구성되어 있다.
   - `URLSessionConfiguration` : URLSession 생성
   - `URLSessionTask` : 실제 서버와 통신 담당(서버로 보낸 요청에 대한 응답을 받는 역할)
@@ -400,7 +402,9 @@ mermaid: true
 - 캐싱을 통해 네트워크 요청의 빈도를 줄이고 서버의 부하를 줄여 앱의 성능을 향상시킬 수 있다.
   - `URLCache`로 캐싱을 구현할 수 있다.
   - URLCache는 URL 요청과 응답을 캐싱하는 클래스이다.
+
   ``` swift
+
   let url = URL(string: "https://api.example.com/data")!
   let request = URLRequest(url: url)
   let cache = URLCache.shared
@@ -417,27 +421,29 @@ mermaid: true
       }
       task.resume()
   }
+
   ```
-- Alamofire와 같은 외부 라이브러리를 사용하지 않고 URLSession을 사용할 때 장점
-  - 경량성 및 의존성 감소
-    - URLSession은 Swift 표준 라이브러리의 일부이기 때문에, 별도의 외부 라이브러리를 추가할 필요가 없다.
-    - 이로 인해 앱의 크기가 줄어들고, 의존성 관리도 간소화된다.
-    - 반면 Alamofire와 같은 라이브러리를 사용하면 외부 코드에 의존하게 되며, 이는 라이브러리의 업데이트나 변경에 따라 앱이 영향을 받을 수 있다.
-  - 더 깊은 제어 및 커스터마이징
-    - URLSession을 사용하면 네트워크 요청의 모든 세부 사항을 직접 제어할 수 있다. 
-    - 요청의 헤더, 캐싱 정책, 타임아웃 설정 등을 세밀하게 조정할 수 있어, 특정한 요구사항에 맞춘 네트워크 작업을 구현할 수 있다.
-  - 배우기 좋은 기본 개념
-    - URLSession을 직접 사용하면 네트워킹의 기본 개념을 깊이 이해할 수 있다. 
-    - 네트워크 요청의 흐름, HTTP 프로토콜, 비동기 작업 처리 등의 원리를 이해하는 데 도움이 된다.
-    - 이는 네트워킹에 대한 깊이 있는 지식을 쌓고자 하는 개발자에게 큰 이점이다. 
-  - 빠른 디버깅 및 문제 해결
-    - 표준 라이브러리를 사용하면 Swift와 iOS의 기본 디버깅 도구를 활용하여 문제를 추적하고 해결하기가 더 쉬울 수 있다. 
-    - 외부 라이브러리를 사용할 경우, 해당 라이브러리 내부의 동작을 이해하는 데 추가적인 노력이 필요할 수 있다.
-  - 최신 기능 사용
-    - URLSession은 Apple의 공식 API이기 때문에, 최신 iOS 기능이나 최적화가 가장 빠르게 반영된다.
-    - 외부 라이브러리의 경우 이러한 기능이 지원되기까지 시간이 걸릴 수 있다.
-  - 배터리 효율성 및 성능 최적화
-    - Apple은 URLSession을 iOS 시스템에 최적화하여 개발했기 때문에, 배터리 효율성과 성능 측면에서 최적의 결과를 기대할 수 있다.
+#### Alamofire와 같은 외부 라이브러리를 사용하지 않고 URLSession을 사용할 때 장점
+
+- 경량성 및 의존성 감소
+  - URLSession은 Swift 표준 라이브러리의 일부이기 때문에, 별도의 외부 라이브러리를 추가할 필요가 없다.
+  - 이로 인해 앱의 크기가 줄어들고, 의존성 관리도 간소화된다.
+  - 반면 Alamofire와 같은 라이브러리를 사용하면 외부 코드에 의존하게 되며, 이는 라이브러리의 업데이트나 변경에 따라 앱이 영향을 받을 수 있다.
+- 더 깊은 제어 및 커스터마이징
+  - URLSession을 사용하면 네트워크 요청의 모든 세부 사항을 직접 제어할 수 있다. 
+  - 요청의 헤더, 캐싱 정책, 타임아웃 설정 등을 세밀하게 조정할 수 있어, 특정한 요구사항에 맞춘 네트워크 작업을 구현할 수 있다.
+- 배우기 좋은 기본 개념
+  - URLSession을 직접 사용하면 네트워킹의 기본 개념을 깊이 이해할 수 있다. 
+  - 네트워크 요청의 흐름, HTTP 프로토콜, 비동기 작업 처리 등의 원리를 이해하는 데 도움이 된다.
+  - 이는 네트워킹에 대한 깊이 있는 지식을 쌓고자 하는 개발자에게 큰 이점이다. 
+- 빠른 디버깅 및 문제 해결
+  - 표준 라이브러리를 사용하면 Swift와 iOS의 기본 디버깅 도구를 활용하여 문제를 추적하고 해결하기가 더 쉬울 수 있다. 
+  - 외부 라이브러리를 사용할 경우, 해당 라이브러리 내부의 동작을 이해하는 데 추가적인 노력이 필요할 수 있다.
+- 최신 기능 사용
+  - URLSession은 Apple의 공식 API이기 때문에, 최신 iOS 기능이나 최적화가 가장 빠르게 반영된다.
+  - 외부 라이브러리의 경우 이러한 기능이 지원되기까지 시간이 걸릴 수 있다.
+- 배터리 효율성 및 성능 최적화
+  - Apple은 URLSession을 iOS 시스템에 최적화하여 개발했기 때문에, 배터리 효율성과 성능 측면에서 최적의 결과를 기대할 수 있다.
 
 
 <br/>
@@ -654,22 +660,53 @@ session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: E
 - 위의 handshake 과정을 끝내고 나면 실제 통신이 이뤄진다.
   - application layer에서 발생한 모든 데이터들이 Session key에 의해 암호화되어 전송된다.
 
-#### TLS 통신 - 클라이언트와 서버 간 신원 확인
+#### TLS 통신 - 클라이언트와 서버 간 신원 확인 (Handshake Protocol)
 
-- Handshake Protocol `ClientHello` `client ➡️ server`: 클라이언트가 서버에게 자신이 생성한 랜덤데이터, 사용 가능한 암호화 & 압축 방식 목록 등을 서버에게 전달한다.
-- Handshake Protocol `ServerHello` `server ➡️ client`: 서버가 클라이언트에게 응답하는 메시지이다. ClientHello에서 자신이 사용할 암호화, 압축 방식 등을 확인한다. 그 후 클라이언트에게 자신이 생성한 랜덤데이터, 세션 ID와 함께 선택화 암호화 & 압축 방식을 클라이언트에게 보낸다.
-- Handshake Protocol `Certificate` `server ➡️ client`: 서버는 클라이언트에게 자신의 인증서를 보내고, 클라이언트가 이를 검증한다. 이 과정에서 클라이언트는 CA의 신뢰성을 확인한다. 
-- Handshake Protocol `Server Key Exchange` `server ➡️ client`: 인증서 안에 서버의 공개키가 없는 경우 해당 메시지를 보낸다.
-- Handshake Protocol `Server Hello Done` `server ➡️ client`: Certificate까지 전송 했으면 해당 메시지를 클라이언트에게 전송한다.
+##### 1. ClientHello `client ➡️ server` 
 
-#### TLS 통신 - 암호화 통신 준비
+- 클라이언트가 서버에게 자신이 생성한 랜덤데이터, 사용 가능한 암호화 & 압축 방식 목록 등을 서버에게 전달한다.
 
-- Handshake Protocol `Client Key Exchange` `client ➡️ server`: 클라이언트는 서버에게 `pre-master secret`을 전달한다. 클라이언트는 자신의 랜덤 데이터와 인증서에 담겨있던 서버의 랜덤 데이터를 이용해 pre-master secret를 생성한다.
-- Change Cipher Spec Protocol `Change Cipher Spec` `client ➡️ server`: 핸드쉐이크에 의해 협상된 암호화 방식이 적용됨을 알린다. 이제부터 암호화하여 통신한다는 의미이다.
-- Handshake Protocol `Encrypted handshake message(finished)` `client ➡️ server`: 핸드쉐이크가 종료됨을 알린다.
-- Handshake Protocol `Change Cipher Spec` `server ➡️ client`: 핸드쉐이크에 의해 협상된 암호화 방식이 적용됨을 알린다. 이제부터 암호화하여 통신한다는 의미이다.
-- Handshake Protocol `Encrypted handshake message(finished)` `server ➡️ client`: 핸드쉐이크가 종료됨을 알린다.
+##### 2. ServerHello `server ➡️ client`
 
+- 서버가 클라이언트에게 응답하는 메시지이다. 
+- ClientHello에서 자신이 사용할 암호화, 압축 방식 등을 확인한다. 
+- 그 후 클라이언트에게 자신이 생성한 랜덤데이터, 세션 ID와 함께 선택화 암호화 & 압축 방식을 클라이언트에게 보낸다.
+
+##### 3. Certificate `server ➡️ client`
+
+- 서버는 클라이언트에게 자신의 인증서를 보내고, 클라이언트가 이를 검증한다. 
+- 이 과정에서 클라이언트는 CA의 신뢰성을 확인한다. 
+
+##### 4. Server Key Exchange `server ➡️ client`
+
+- 인증서 안에 서버의 공개키가 없는 경우 해당 메시지를 보낸다.
+
+##### 5. Server Hello Done `server ➡️ client`
+
+- Certificate까지 전송 했으면 해당 메시지를 클라이언트에게 전송한다.
+
+#### TLS 통신 - 암호화 통신 준비 (Handshake Protocol)
+
+##### 1. Client Key Exchange `client ➡️ server`
+
+- 클라이언트는 서버에게 `pre-master secret`을 전달한다. 
+- 클라이언트는 자신의 랜덤 데이터와 인증서에 담겨있던 서버의 랜덤 데이터를 이용해 pre-master secret를 생성한다.
+
+##### 2. Change Cipher Spec `client ➡️ server`
+
+- Change Cipher Spec Protocol이다.
+- 핸드쉐이크에 의해 협상된 암호화 방식이 적용됨을 알린다. 
+- 이제부터 암호화하여 통신한다는 의미이다.
+
+##### 3. Encrypted handshake message(finished) `client ➡️ server`
+
+- 핸드쉐이크가 종료됨을 알린다.
+
+##### 4. Change Cipher Spec `server ➡️ client`
+
+##### 5. Encrypted handshake message(finished) `server ➡️ client`
+
+<br/>
 
 #### pre-master secret
 
@@ -778,7 +815,7 @@ session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: E
 
 #### HTTP 2.0 용어 설명
 
-![computerNetworkLayer](/assets/img/computerNetworkLayer.png)
+![http2.0](/assets/img/http2.0.png)
 
 - Stream : 연결된 Connection 내에서 하나 이상의 메시지를 양방향으로 주고 받는 양방향 바이트 흐름으로 요청과 응답을 양방향으로 오가는 논리적 연결 단위이다.
 - Message : HTTP 1.1과 마찬가지로 하나의 요청과 응답을 구성하는 단위로 다수의 Frame으로 이뤄진 배열 라인이다.
