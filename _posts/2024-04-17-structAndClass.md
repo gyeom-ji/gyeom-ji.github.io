@@ -123,6 +123,7 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
 - <span style="color:#9fb584">**value type 인 Array, Dictionary, Set, String 등은 최적화를 위해 heap공간을 같이 활용한다.**</span>
 
 
+<br/>
 
 ## Reference Counting
 
@@ -143,6 +144,7 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
         - 레퍼런스 카운팅 오버헤드는 구조제의 레퍼런스 개수에 비례한다.
     - <span style="color:#9fb584">**struct가 하나보다 더 많은 레퍼런스 타입을 가지게 된다면 reference counting 오버헤드가 class보다 더 많이 발생하게 된다.**</span>
 
+<br/>
 
 ## Method Dispatch
 
@@ -157,6 +159,7 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
 - static에서는 컴파일러가 최적화 작업이 가능하지만, dynamic에서는 컴파일러가 추론할 수 없다.
 
 <br/>
+
 [ Static Method Dispatch ]
 
 - <span style="color:#9fb584">**컴파일 시점**</span>에 컴파일러가 메소드의 실제 코드 위치를 파악해 런타임에 찾는 과정 없이 해당 코드를 바로 실행한다.
@@ -164,6 +167,7 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
     - Method Inlining : 메소드 호출 시 해당 메소드로 이동하지 않고 메소드의 결과값을 바로 반환하여 성능을 향상 시키는 것
 - struct
 
+<br/>
 
 [ Dynamic Method Dispatch ]
 
@@ -173,7 +177,7 @@ Struct와 Class는 <span style="color:#9fb584">**OOP(Object-Oriented Programming
     - vTable : 클래스 내부 함수 중 어떤 함수를 불러올지 결정하는 함수 포인터 테이블으로, 오버라이딩된 함수가 있을 수도 있고, 확장된 함수도 있을 수 있으니 이 중에서 한 함수를 찾는 것이다.
 - class
 
-
+<br/>
 
 ## Struct  - Value Type
 
