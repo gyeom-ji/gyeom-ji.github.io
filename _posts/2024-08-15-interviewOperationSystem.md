@@ -280,6 +280,8 @@ print(first.name) // yun
 
 ```
 
+[📝 Value Type과 Reference Type](http://gyeom-ji.github.io/posts/structAndClass/)
+
 <br/>
 
 ## ✏️ iOS 디바이스의 메모리 제약과 앱 메모리 제한
