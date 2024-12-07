@@ -280,7 +280,7 @@ print(first.name) // yun
 
 ```
 
-[📝 Value Type과 Reference Type](http://gyeom-ji.github.io/posts/structAndClass/)
+
 
 <br/>
 
