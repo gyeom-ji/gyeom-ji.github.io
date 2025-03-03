@@ -394,7 +394,7 @@ print(first.name) // yun
 ---
 
 - 강한 참조와 약한 참조는 Swift에서 메모리 관리와 객체 생명주기를 관리하기 위해 사용하는 참조 방식이다.
-- 이 두 참조 방식은 ARC(Automatic Reference Counting) 시스템을 통해 메모리를 효율적으로 관리하는 데 중요한 역할을 gksek.
+- 이 두 참조 방식은 ARC(Automatic Reference Counting) 시스템을 통해 메모리를 효율적으로 관리하는 데 중요한 역할을 한다.
 - 객체가 `강한 참조`로 연결되어 있으면 <span style="color:#9fb584">**ARC가 객체를 메모리에서 해제하지 않고 유지**</span>한다.
 - `약한 참조`는 <span style="color:#9fb584">**객체가 메모리에서 해제되도록 허용하여 순환 참조(Strong Reference Cycle) 문제를 방지**</span>할 수 있다.
 

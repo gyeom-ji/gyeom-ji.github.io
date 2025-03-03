@@ -61,61 +61,6 @@ mermaid: true
 
 <br/>
 
-<details>
-<summary>타입 프로퍼티(Type Property)💡</summary>
-<div markdown="1">
-
-### 타입 프로퍼티(Type Property)
-
-- 클래스, 구조체, 열거형에서 사용된다.
-- `static` 을 이용해 선언하며 자동으로 `lazy`로 작동한다.(lazy 직접 붙일 필요 없음)
-- 저장 타입 프로퍼티와 연산 타입 프로퍼티가 존재한다.
-  - 저장 & 연산 프로퍼티 앞에 `static` 키워드를 붙이면 저장 타입 프로퍼티 & 연산 타입 프로퍼티가 된다.
-- <span style="color:#9fb584">**저장 타입의 경우 당시 원하는 값으로 항상 초기화 되어 있어야 한다.**</span>
-  - 선언과 동시에 저장 타입 프로퍼티를 초기화 하지 않으면 ➡️ static으로 선언할 경우, initializer가 필수거나 getter/setter를 지정해야 한다는 오류가 발생한다.
-  - static으로 선언되는 저장 타입 프로퍼티의 경우 초기화할 때 값을 할당할 initializer가 없기 때문이다.
-  > firstName은 타입 프로퍼티로 선언되어 있지만 Person 클래스 안에 있고, Person 클래스의 인스턴스가 생성될 때 initializer에 의해 모든 프로퍼티가 초기화 되지 않나? ❌<br/><br/>
-  타입 프로퍼티는 인스턴스가 생성될 때 마다 <span style="color:#9fb584">**매번 생성**</span>되는 <span style="color:#9fb584">**기존 프로퍼티**</span>와 다르다.<br/>
-  인스턴스가 생성된다고 해당 인스턴스의 멤버로 매번 생성되는 것이 아니다.<br/>
-  누군가 한번 불러서 메모리에 올라가면, 그 뒤로는 생성되지 않으며 언제 어디서든 해당 타입 프로퍼티에 접근할 수 있는 것이다.<br/><br/>
-  ➡️ <span style="color:#9fb584">**인스턴스 생성과 전혀 상관이 없기 때문에 인스턴스 생성 시 불리는 initializer과도 상관이 없다. 따라서 초기값이 없을 경우, 초기 값을 셋팅할 방법이 없기 때문에 반드시 초기값을 지녀야 한다.**</span>
-
-
-![typeProperty](/assets/img/typeProperty.png)
-
-- 인스턴스를 생성할 때마다 각자 가지는 프로퍼티가 아니기 때문에 Person 인스턴스를 생성해도 저장 타입 프로퍼티인 firstName, lastName이 없다.
-
-![typeProperty](/assets/img/typeProperty2.png)
-- 타입 이름을 통해서만 접근 가능하다.
-
-<br/>
-
-``` swift
-// 저장 & 연산 프로퍼티
-class Person {
-    let firstName: String = "gyeomji"    // 저장 프로퍼티
-    let lastName: String = "yoon"       // 저장 프로퍼티
-    var foolName: String {             // 연산 프로퍼티
-        return lastName + firstName
-    }
-}
-
-// 저장 타입 프로퍼티 & 연산 타입 프로퍼티
-class Person {
-  // static let firstName: String ➡️ 오류 발생
-    static let firstName: String = "gyeomji"    // 저장 타입 프로퍼티
-    static let lastName: String = "yoon"       // 저장 타입 프로퍼티
-    static var foolName: String {             // 연산 타입 프로퍼티
-        return lastName + firstName
-    }
-}
-
-```
-
-</div>
-</details>
-
-<br/>
 
 ## ✏️ 데이터베이스의 종류와 iOS에서 주로 사용되는 데이터베이스에 대해 설명해주세요.
 
@@ -2710,6 +2655,573 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 - layoutAttributesForElements(in:): 주어진 영역에 표시될 아이템들의 레이아웃 속성을 반환한다.
 - layoutAttributesForItem(at:): 특정 아이템의 레이아웃 속성을 반환한다.
 - shouldInvalidateLayout(forBoundsChange:): 레이아웃을 갱신할 조건을 지정한다.
+
+
+<br/>
+
+## ✏️ ARC(Automatic Reference Counting)의 동작 원리는 무엇인가요?
+
+---
+
+- Swift와 Objective-C에서 객체의 메모리를 관리하는 시스템이다.
+- ARC는 객체가 더 이상 필요하지 않을 때 자동으로 메모리를 해제하여 메모리 누수를 방지한다.
+- 수동으로 메모리를 해제해야 하는 번거로움을 줄여준다.
+- ARC의 동작 원리는 객체의 `참조 카운트 Reference Count`를 기반으로 한다.
+- ARC는 객체에 대한 <span style="color:#9fb584">**강한 참조**</span>를 추적하여 객체가 얼마나 참조되고 있는지 관리한다.
+- 각 객체는 참조될 때마다 참조 카운트가 증가하고, 참조가 해제되면 참조 카운트가 감소한다.
+- 참조 카운트가 0이 되면 객체가 더 이상 필요하지 않다고 판단하여 메모리에서 해제한다.
+- 대부분의 경우 객체는 **강한 참조**를 통해 다른 객체를 참조하고, 이때 참조 카운트가 증가한다.
+
+### 동작 과정 예시
+
+- 객체 생성 시 참조 카운트는 1로 증가한다.
+- 다른 객체가 강한 참조를 통해 이를 참조하면 참조 카운트가 증가한다.
+- 강한 참조가 해제되면 참조 카운트가 감소한다.
+- 참조 카운트가 0이 되면, deinit 메소드가 호출되고 객체가 메모리에서 해제된다.
+
+
+``` swift
+class Example {
+    var data: String
+    init(data: String) {
+        self.data = data
+        print("\(data) initialized")
+    }
+    deinit {
+        print("\(data) is being deinitialized")
+    }
+}
+
+var example: Example? = Example(data: "Sample Data") // 참조 카운트 1
+example = nil // 참조 카운트 0, 메모리 해제 및 deinit 호출
+```
+
+<br/>
+
+## ✏️ deinit 메서드는 언제 호출되며, 어떤 역할을 하나요?
+
+---
+
+- deinit 메서드는 객체가 메모리에서 해제될 때 호출되는 소멸자이다.
+- Swift에서는 객체가 해제되기 직전 deinit 메소드가 자동으로 호출된다.
+- deinit 메서드는 오버라이드 없이 자동으로 호출되며, 파라미터나 반환값을 가질 수 없다.
+- 리소스 해제 : 파일 핸들, 네트워크 연결, 데이터베이스 연결과 같은 리소스를 해제하는 데 사용된다.
+- Observer 제거 : NotificationCenter나 KVO에서 추가된 옵저버를 제거하여 메모리 누수를 방지한다.
+- 디버깅 : 객체의 해제 여부를 확인하는 로그를 추가하여 retain cycle이 발생하는지 확인하는 데 유용하다.
+
+<br/>
+
+## ✏️ 상속(Inheritance)과 프로토콜(Protocol)의 차이점은 무엇인가요?
+
+---
+
+- 상속과 프로토콜은 Swift에서 객체지향 프로그래밍 및 프로토콜 지향 프로그래밍을 구현하기 위한 두 가지 주요 개념이다.
+- 상속은 <span style="color:#9fb584">**코드 재사용이 필요한 경우와 기본적인 동작을 자식 클래스에서 확장할 때 유용**</span>하다.
+- 프로토콜은 <span style="color:#9fb584">**클래스뿐만 아니라 구조체와 열거형에서도 사용할 수 있어, 특정 기능을 여러 타입에 걸쳐 공통적으로 구현해야 할 때 적합**</span>하다.
+- Swift에서는 상속과 프로토콜을 함께 사용할 수도 있다. 
+- 클래스 상속을 통해 공통 동작을 물려받으면서, 프로토콜을 채택해 추가적인 기능 요구 사항을 정의할 수 있다.
+
+### 상속
+
+- 상속은 클래스가 다른 클래스의 속성과 메소드를 물려받는 기능이다.
+- Swift에서는 <span style="color:#9fb584">**단일 상속만 지원**</span>되며 하나의 클래스는 하나의 부모 클래스만 가질 수 있다.
+- <span style="color:#9fb584">**상속을 통해 코드 재사용이 가능하며, 부모 클래스의 기능을 확장하거나 수정하기 위해 사용**</span>한다.
+- 부모 클래스에 있는 기본 속성이나 메소드를 자식 클래스에서 사용하거나 <span style="color:#9fb584">**오버라이딩하여 부모 클래스의 메서드, 프로퍼티, 서브스크립트를 재정의할 수 있다.**</span>
+- 상속은 클래스에만 적용되며 구조체, 열거형에 사용할 수 없다.
+
+<details>
+<summary>오버라이딩💡</summary>
+<div markdown="1">
+
+- 서브 클래스는 슈퍼 클래스에서 상속할 인스턴스 메서드, 타입 메서드, 인스턴스 프로퍼티, 타입 프로퍼티, 서브스크립트를 구현할 수 있는데, 이것을 `오버라이딩(overriding)`이라 한다.
+- `override` 키워드 없이 오버라이딩 할 경우 컴파일 에러가 난다.
+- `override` 키워드가 있을 경우, 컴파일러는 슈퍼 클래스에 오버라이딩 선언한 것과 일치한 정의가 있는지 확인 한다.
+  - 슈퍼 클래스에 정의가 없을 경우 에러가 발생한다.
+  - Method does not override any method from its superclass
+ 
+
+### 메소드 오버라이딩
+
+- 상속받은 인스턴스&타입 메서드를 오버라이딩(재정의) 하여, 하위 클래스 내에서 해당 메서드를 원하는 대로 구현을 할 수 있다.
+- `override` 키워드를 붙여 슈퍼클래스의 메소드를 재정의 할 수 있다.
+- 오버라이딩을 할 경우, 슈퍼 클래스의 메소드를 재정의한 것이기 때문에, 슈퍼 클래스의 메소드는 실행되지 않는다.
+  - 슈퍼 클래스의 메소드를 같이 실행하고 싶을 경우 `super`를 사용한다.
+  - super를 부르는 순서는 상관 없다.
+
+``` swift
+class Human {
+    func description() {
+        print("나는 사람입니다")
+    }
+}
+
+class Teacher: Human {
+}
+
+let gyeomji: Teacher = .init()
+
+// Teacher클래스가 Human 클래스를 상속받기 때문에, Human 멤버들에 모두 접근 가능
+gyeomji.description()
+// 나는 사람입니다
+
+// description 오버라이딩(재정의)
+class Teacher: Human {
+    override func description() {
+        print("나는 선생입니다")
+    }
+}
+
+gyeomji.description()
+// 나는 선생입니다
+
+// super 사용
+class Teacher: Human {
+    override func description() {
+        super.description()
+        print("나는 선생입니다")
+    }
+}
+
+gyeomji.description()
+// 나는 사람입니다
+// 나는 선생입니다
+```
+
+### 프로퍼티 오버라이딩
+
+- 상속받은 프로퍼티를 오버라이딩하여 해당 속성에 대한 getter, setter를 제공하거나 상속받은 프로퍼티 값의 변경을 추적할 수 있도록 프로퍼티 옵저버를 추가할 수 있다.
+- 저장 프로퍼티 : 저장 프로퍼티에 저장 속성을 추가하는 오버라이딩은 불가능하다.
+    - getter, setter를 모두 구현해주면 오버라이딩이 가능하다.
+
+``` swift
+class Human {
+    var name = "gyeomji"
+}
+
+// 저장 프로퍼티에 저장 속성을 추가하는 오버라이딩은 불가능하다.
+class Teacher: Human {
+    override var name: String = "gyeomjiYoon"       // Cannot override with a stored property 'name'
+}
+
+
+// getter, setter를 모두 구현해주면 오버라이딩이 가능하다.
+class Teacher: Human {
+    var alias = "gigi"
+ 
+    override var name: String {   
+        get {
+            return self.alias
+        }
+        set {
+            self.alias = newValue
+        }
+    }
+}
+
+let teacher = Teacher()
+print(teacher.name)  // gigi
+```
+
+- 연산 프로퍼티
+  - 부모 클래스에 연산 프로퍼티가 getter로만 구현된 경우 : getter만 구현 / setter 추가 구현 오버라이딩 가능
+  - getter, setter 로 구현된 경우 : getter 만 구현 ❌ / getter, setter 구현 오버라이딩 가능
+
+``` swift
+// 부모 클래스에 연산 프로퍼티가 getter로만 구현된 경우
+class Human {
+    var name = "gyeomji"
+ 
+    var alias: String {
+        return self.name + " 바보"
+    }
+}
+
+// getter만 구현 가능
+class Teacher: Human {
+    override var alias: String {
+        return self.name + " 멍청이"
+    }
+}
+
+// setter 추가 구현 가능
+class Teacher: Human {
+    override var alias: String {
+        get {
+            return self.name + " 멍청이"
+        }
+        set {
+            self.name = newValue
+        }
+    }
+}
+
+// 부모 클래스에 연산 프로퍼티가 getter, setter 로 구현된 경우
+class Human {
+    var name = "gyeomji"
+ 
+    var alias: String {
+        get {
+            return self.name + " 바보"
+        }
+        set {
+            self.name = newValue
+        }
+    }
+}
+
+// getter/setter 구현 가능
+class Teacher: Human {
+    override var alias: String {
+        get {
+            return self.name + " 멍청이"
+        }
+        set {
+            self.name = newValue
+        }
+    }
+}
+```
+
+
+### 프로퍼티 옵저버 추가
+
+- 저장 프로퍼티의 경우, var로 선언된 프로퍼티만 오버라이딩으로 옵저버를 추가할 수 있다.
+  - 프로퍼티 옵저버의 경우 값이 변경될 때를 알려주는 것인데 상수면 값이 바뀔 일이 없다.
+  - 슈퍼 클래스의 프로퍼티기 타입 추론에 의해 타입이 명시 되어 있지 않다고 해도 프로퍼티를 오버라이딩 할 경우엔 타입을 반드시 명시해야 한다.
+- 연산 프로퍼티의 경우, getter / setter가 모두 구현된 경우만 오버라이딩으로 옵저버를 추가할 수 있다.
+  - getter만 구현된 경우 setter(값 변경)이 호출될 일이 없다.
+
+``` swift
+// 저장 프로퍼티의 경우, var로 선언된 프로퍼티만
+class Human {
+    var name = "gyeomji"
+}
+ 
+class Teacher: Human {
+  // 타입이 반드시 명시되어야 함
+    override var name: String {
+        willSet {
+            print("name willSet \(newValue)")
+        }
+        didSet {
+            print("name didSet \(oldValue)")
+        }
+    }
+}
+
+let teacher = Teacher()
+teacher.name = "unknown"
+// name willSet unknown
+// name didSet gyeomji
+
+
+// 연산 프로퍼티의 경우, getter / setter가 모두 구현된 경우만
+class Human {
+    var name = "gyeomji"
+ 
+    var alias: String {
+        get {
+            return name + " 바보"
+        }
+        set {
+            self.name = newValue
+        }
+    }
+}
+ 
+class Teacher: Human {
+    override var alias: String {
+        willSet {
+            print("Computed Property willSet")
+        }
+        didSet {
+            print("Computed Property didSet")
+        }
+    }
+}
+
+let teacher = Teacher()
+teacher.alias = "unknown"
+// Computed Property willSet
+// Computed Property didSet
+```
+
+
+### final 오버라이딩 금지
+
+- 오버라이딩이 가능한 프로퍼티, 메서드, 서브스크립트 등에 final을 붙이면, 해당 정의는 더이상 오버라이딩이 불가하다.
+- 오버라이딩이 금지된 것이지, 서브 클래스에서 접근 자체가 금지된 것은 아니다.
+
+</div>
+</details>
+
+### 프로토콜
+
+- <span style="color:#9fb584">**특정 기능이나 속성의 요구 사항을 정의하는 틀**</span>으로, 실제 구현을 포함하지 않고, 요구사항을 선언 하는 추상 인터페이스이다.
+- 클래스, 구조체, 열거형은 프로토콜을 채택하고 구현할 수 있다.
+- 여러 타입이 공통적으로 구현해야 하는 기능을 정의하는데 사용된다.
+- <span style="color:#9fb584">**다중 프로토콜 채택이 가능**</span>하므로, 클래스나 구조체, 열거형이 여러 프로토콜을 채택하여 다양한 기능을 구현할 수 있다.
+- <span style="color:#9fb584">**프로토콜 익스텐션을 사용해 모든 프로토콜을 채택한 타입에 기본 구현을 제공할 수 있다.**</span>
+
+### 차이점 비교
+
+
+|특성|상속|프로토콜|
+|:------|:------:|:------:|
+|주요 사용 대상|클래스|클래스, 구조체, 열거형|
+|상속 관계|단일 상속|다중 프로토콜 채택|
+|목적|코드 재사용 및 클래스 계층 구조 정의|특정 기능 요구 사항 정의, 다형성 구현|
+|오버라이딩|오버라이딩 가능|프로토콜 자체에 구현이 없고 채택한 타입이 구현|
+|확장성|클래스 상속 체계 내에서말 확장 가능|프로토콜 익스텐션을 통해 모든 타입에 확장 가능|
+|추상성|구체적인 구현 포함 가능|요구사항만 정의, 구현은 타입에서 수행|
+
+
+<br/>
+
+## ✏️ 클래스 상속을 사용할 때의 장단점은 무엇인가요?
+
+---
+
+### 장점
+
+- 코드 재사용
+  - 부모 클래스의 속성과 메서드를 자식 클래스에서 그대로 상속받을 수 있어 코드 중복을 줄이고, 코드 재사용성을 높인다.
+  - 공통 기능을 부모 클래스에 구현함으로써 여러 자식 클래스에서 공유할 수 있다.
+- 확장성
+  - 상속을 통해 기존 클래스에 기능을 추가하거나, 기존 메서드를 오버라이드하여 특정 동작을 변경할 수 있어, 유지 보수와 확장이 용이하다.
+  - 자식 클래스에서 부모 클래스의 기본 동작을 활용하면서 필요한 기능을 추가할 수 있다.
+- 계층 구조 형성
+  - 상속을 사용하면 객체 계층 구조를 정의할 수 있다.
+  - 이 계층 구조는 개념적으로 연관된 클래스 간의 관계를 명확히 하여, 프로그램의 구조를 이해하기 쉽게 만든다.
+  - 상위 클래스와 하위 클래스 간의 계층을 통해 특정 유형의 객체를 그룹화하고 관리하기 쉽다.
+- 다형성(Polymorphism) 활용
+  - 부모 클래스 타입의 참조를 통해 자식 클래스의 인스턴스를 다룰 수 있어, 다형성을 활용한 유연한 코드를 작성할 수 있다.
+  - 이를 통해 자식 클래스의 고유 기능을 통해 동일한 부모 클래스 타입을 확장할 수 있다.
+
+### 단점
+ 
+- 강한 결합(Coupling)
+  - 상속은 자식 클래스가 부모 클래스에 의존하게 만들어, 부모 클래스의 변경이 자식 클래스에 영향을 미칠 수 있다.
+- 복잡한 계층 구조
+  - 상속 계층이 깊어질수록 클래스 구조가 복잡해져서 가독성과 관리가 어려워진다. - 또한, 다수의 상속 계층이 있는 경우, 클래스 간 관계를 파악하기가 까다로울 수 있다.
+- 다중 상속 제한
+- 유연성 부족
+  - 자식 클래스에서 불필요한 부모 클래스의 기능까지 물려받는 경우도 발생할 수 있다.
+- 캡슐화 문제:
+  - 상속을 사용하면 부모 클래스의 내부 구현이 자식 클래스에 노출될 수 있어 캡슐화가 깨질 수 있다.
+
+- 클래스 간 명확한 'is-a' 관계가 있을 때 적합하다.
+  - Bird는 Animal의 한 종류이므로 Bird 클래스가 Animal 클래스를 상속하는 것은 적절하다.
+- 그러나 여러 기능을 조합하여 객체를 구성해야 하는 경우, 상속 대신 프로토콜이나 컴포지션(구성)을 사용하는 것이 더 유리할 수 있다.
+  - Flyable 프로토콜을 정의하고 여러 클래스가 채택하여 fly() 메서드를 구현하게 하면 상속을 통해 깊은 계층을 형성하지 않고도 객체에 특정 기능을 부여할 수 있다.
+
+
+<br/>
+
+## ✏️ 다중 상속(Multiple Inheritance)이 불가능한 이유는 무엇인가요?
+
+---
+
+- 다이아몬드 문제
+  - 다중 상속을 허용하면 동일한 상위 클래스가 두 개 이상의 경로로 상속되는 상황이 발생할 수 있다.
+  - 이 경우 D 클래스가 A 클래스의 어떤 인스턴스를 상속받을지 명확하지 않아, A 클래스의 속성과 메서드가 중복되거나 모호해진다.
+
+```
+    A
+   / \
+  B   C
+   \ /
+    D
+```
+
+- 모호성 문제
+  - 다중 상속을 통해 부모 클래스들이 동일한 이름의 메소드나 속성을 정의할 때, 자식 클래스에서 어떤 부모 클래스의 메소드, 속성을 사용할지 모호할 수 있다.
+- 복잡한 상속 구조
+  - 다수의 부모 클래스를 상속받는 클래스는 여러 부모 클래스에서 가져온 메서드와 속성을 모두 포함하므로, 클래스 간 관계가 복잡해지고 코드의 이해가 어렵다.
+  - 상속 구조가 복잡해지면 클래스 간의 결합도가 높아져 유지보수와 확장성이 떨어질 수 있다.
+- 객체 지향 원칙 위반 가능성
+  - 객체 지향 프로그래밍의 원칙 중 하나는 "상속보다는 구성(Composition over Inheritance)"을 사용하는 것이다.
+  - 상속은 강한 결합을 만들기 때문에, 다중 상속을 허용할 경우 결합도가 더 높아지고, 객체 지향 설계의 유연성을 해칠 수 있다.
+  - Swift는 상속보다 프로토콜을 통한 다형성을 지원함으로써 이러한 결합도를 낮추고, 더 유연한 설계를 유도한다.
+
+<br/>
+
+## ✏️ 프로토콜 준수(Conformance)를 통해 다형성을 구현하는 방법은 무엇인가요?
+
+---
+
+### 1. 프로토콜 정의
+
+- 여러 타입이 공통적으로 준수해야 할 요구사항을 정의하는 프로토콜을 만든다.
+- 해당 프로토콜을 채택하는 모든 타입은 프로토콜의 요구사항을 반드시 구현해야 한다.
+
+``` swift
+protocol Animal {
+    func makeSound()
+}
+```
+
+### 2. 다양한 타입이 프로토콜을 준수하도록 구현
+
+- 프로토콜을 준수하는 여러 타입을 정의한다.
+- 각각의 타입은 프로토콜의 요구사항을 다르게 구현할 수 있다.
+
+``` swift
+struct Dog: Animal {
+    func makeSound() {
+        print("Woof!")
+    }
+}
+
+struct Cat: Animal {
+    func makeSound() {
+        print("Meow!")
+    }
+}
+
+struct Bird: Animal {
+    func makeSound() {
+        print("Chirp!")
+    }
+}
+```
+
+### 3. 프로토콜 타입을 사용하여 다형성 구현
+
+- 프로토콜을 채택한 여러 타입의 인스턴스를 프로토콜 타입으로 선언하여 다형성을 구현할 수 있다.
+  > 다형성 : 하나의 타입에 여러 객체를 대입할 수 있는 성질
+- Animal 타입 변수는 Dog, Cat, Bird 인스턴스를 참조할 수 있고, 각각의 makeSound() 메서드를 호출할 때 다형적으로 동작한다.
+
+``` swift
+let animals: [Animal] = [Dog(), Cat(), Bird()]
+
+for animal in animals {
+    animal.makeSound() // 각 타입에 맞는 메서드 호출
+}
+```
+
+### 4. 프로토콜 확장을 활용해 기본 구현 제공
+
+- 프로토콜 확장을 통해 프로토콜을 준수하는 모든 타입에 대해 기본 구현을 제공할 수 있다.
+- 다형성을 구현하면서도 코드 중복을 줄인다.
+
+``` swift
+extension Animal {
+  // Dog, Cat, Bird 타입에 추가적으로 구현하지 않아도 eat()을 사용할 수 있다.
+    func eat() {
+        print("Eating food")
+    }
+}
+
+for animal in animals {
+    animal.eat()       // "Eating food" 출력
+    animal.makeSound() // 각 동물에 맞는 소리 출력
+}
+```
+
+### 5. 프로토콜 타입을 함수의 파라미터로 사용
+
+- 프로토콜을 함수의 파라미터 타입으로 지정함으로써 다양한 객체를 동일한 함수에서 처리할 수 있다.
+
+``` swift
+func describe(animal: Animal) {
+    animal.makeSound()
+}
+
+describe(animal: Dog()) // "Woof!"
+describe(animal: Cat()) // "Meow!"
+describe(animal: Bird()) // "Chirp!"
+```
+
+### 6. 제네릭과 프로토콜 함께 사용
+
+- 제네릭을 사용하여 다형성을 좀 더 유연하게 구현할 수 있다.
+- 제네릭을 사용하면서 특정 프로토콜을 준수하도록 제한하여 다형성을 구현할 수 있다.
+
+``` swift
+func performAction<T: Animal>(on animal: T) {
+    animal.makeSound()
+    animal.eat()
+}
+
+performAction(on: Dog()) // "Woof!", "Eating food."
+performAction(on: Cat()) // "Meow!", "Eating food."
+```
+
+<br/>
+
+## ✏️ 사용자 인터페이스(UI) 테스트와 단위(Unit) 테스트의 차이점은 무엇인가요?
+
+---
+
+### 단위 테스트
+
+- 애플리케이션의 <span style="color:#9fb584">**특정 기능을 독립적으로 테스트하는 것을 목표**</span>로 한다.
+- 보통 메소드 수준에서 작성된다.
+- 외부 의존성(네트워크 요청, 데이터베이스 접근 등)이 있을 경우, 이를 실제로 호출하지 않고 모의 객체(Mock Object)를 사용해 테스트를 격리시킨다.
+- 작은 코드 조각을 테스트하기 때문에 빠르게 실행되며, 즉각적인 피드백을 제공해 코드 수정 시 영향을 최소화 한다.
+  - 작은 코드 조각의 문제를 빨리 발견할 수 있어, 전체 시스템에 문제가 퍼지기 전에 수정할 수 있다.
+- 각 함수가 예상대로 작동하는지를 확인하기 때문에, 특정 기능에 대한 의도한 구현이 올바른지 검증할 수 있다.
+- 코드 변경 시 영향 범위를 쉽게 파악할 수 있고, 리팩토링 후에도 기능이 올바르게 작동하는지 확인할 수 있다.
+- 사용 예시
+  - 계산기 앱에서 덧셈, 뺄셈 등의 함수를 개별적으로 테스트하여 함수가 정확히 동작하는지 확인한다.
+  - 네트워크 서비스의 응답 처리 로직을 테스트하기 위해 모의 응답(Mock Response)을 설정하여 데이터를 파싱 하는 로직이 잘 작동하는지 확인한다.
+
+> 단위 테스트의 예로 함수 결과를 print() 문으로 확인하는 것도 포함되는가?<br/>
+> print() 문으로 함수의 결과를 확인하는 것은 단위 테스트와는 다르다. 단위 테스트는 특정 기능의 동작을 자동화된 테스트 코드로 작성하여, 코드가 수정되더라도 동일한 테스트를 반복적으로 실행할 수 있도록 하는 것이 목표다.<br/><br/>
+> print() : 매번 수동으로 결과를 확인해야 한다.<br/>
+>   - 코드 변경 후 다시 결과를 확인할 때 반복적으로 수동 확인이 필요하며, 코드에 영향을 주지 않고 임시로 확인할 때 주로 사용한다.<br/>
+> 단위 테스트 : XCTest 등의 테스트 프레임워크를 사용하여 테스트 케이스를 코드로 작성한다.<br/>
+>   - 코드가 변경되어도 테스트가 자동으로 실행되기 때문에 코드가 예상대로 동작하는지 쉽게 확인할 수 있다.<br/>
+>   - 각 함수가 기대한 대로 작동하는지 예상 결과와 실제 결과를 비교하여, 성공 여부를 자동으로 판별한다.<br/>
+
+### 사용자 인터페이스 테스트 
+
+- 사용자 관점에서 애플리케이션을 테스트하며, 사용자가 애플리케이션과 상호작용하는 모든 흐름을 자동화하여 테스트한다.
+- 버튼 클릭, 텍스트 입력, 화면 전환 등 실제 UI 요소와 상호작용한다.
+  - 사용자가 앱을 사용할 때의 경로와 흐름을 테스트할 수 있다.
+- 기능이 아닌 사용자의 경험을 확인하는 데 중점을 둔다.
+  - 화면이 올바르게 표시되는지, 버튼을 클릭했을 때 올바른 화면으로 이동하는지 등을 확인한다.
+  - 사용자 경험에 기반한 검증을 통해 예상치 못한 오류나 사용자 불편 요소를 발견할 수 있다.
+- 전체 화면을 테스트하기 때문에 상대적으로 오래 걸리고, 다양한 디바이스 환경에서 테스트해야 할 수도 있다.
+- iOS에서는 XCTest 프레임워크와 XCUITest를 사용하여 UI 테스트를 작성할 수 있다.
+- 새로운 기능을 추가하거나 기존 기능을 수정할 때, UI 테스트는 기존 UI가 안정적으로 작동하는지 확인하여 회귀 버그를 방지할 수 있다.
+- 배포 전에 실제 디바이스 환경과 유사한 조건에서 앱의 전반적인 동작을 확인하는 데 유용하다.
+
+
+### 차이점 비교
+
+|구분|단위 테스트|사용자 인터페이스  테스트|
+|:------|:------:|:------:|
+|대상|특정 기능, 함수 또는 메서드|사용자 인터페이스와 전체 앱 흐름|
+|목적|개별 기능 검증 (코드의 정확성 확인)|사용자 경험 검증 (UI 흐름 및 사용성 확인)|
+|외부 의존성|외부 의존성을 모의 객체로 대체하여 격리|실제 UI 환경에서 실행|
+|테스트 속도|매우 빠름 (로컬에서 실행)|상대적으로 느림 (UI 요소를 실제로 렌더링)|
+|유지보수 비용|낮음|높음 (UI 변경 시 테스트 수정 필요)|
+|실행 빈도|자주 실행 (빌드할 때마다 또는 코드 변경 시)|보통 배포 전 또는 주요 기능 변경 시|
+
+
+<br/>
+
+## ✏️ XCTest 프레임워크를 사용하여 테스트를 작성하는 방법은 무엇인가요?
+
+---
+
+
+<br/>
+
+## ✏️ 테스트 주도 개발(TDD)의 장점은 무엇인가요?
+
+---
+
+
+<br/>
+
+## ✏️ 의존성 주입(Dependency Injection)을 활용하여 테스트 가능한 코드를 작성하는 방법은 무엇인가요?
+
+---
+
+
 
 <br/>
 <br/>
