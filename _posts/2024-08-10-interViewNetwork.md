@@ -161,7 +161,9 @@ mermaid: true
 
 <br/> 
 
-### ✏️ TCP/IP 모델과 OSI 모델의 차이점
+## ✏️ TCP/IP 모델과 OSI 모델의 차이점
+
+---
 
 - 계층구조
   - OSI는 7계층 모델이고, TCP/IP는 4계층 모델이다.
@@ -174,18 +176,18 @@ mermaid: true
 
 <br/> 
 
-#### TCP/IP
+### TCP/IP
 
 
 ![networkProtocol](/assets/img/networkProtocol.png)
 
-#### Application Layer
+### Application Layer
 
 - 효율성을 고려하여 OSI의 응용, 표현, 세션 계층을 합쳤다.
 
 <br/> 
 
-#### Transport Layer
+### Transport Layer
 
 - 종단 프로세스 간 데이터 전송을 보장한다.
 - 포트번호를 관리하여 수신된 데이터가 어느 응용 프로그램에 전송될지 판독하고 데이터를 전송한다.
@@ -194,7 +196,7 @@ mermaid: true
 
 <br/> 
 
-#### Internet Layer
+### Internet Layer
 
 - 패킷을 목적지까지 전달하고, 경로 선택 및 데이터 전송을 위한 논리적인 주소(IP)를 할당한다.
 - 네트워크에서 목적지로 데이터 전송을 위해 IP주소를 이용해 최적의 경로를 찾고(routing), 다음 라우터에 데이터를 넘겨준다. (forwarding)
@@ -202,7 +204,7 @@ mermaid: true
 
 <br/> 
 
-#### Network Access Layer
+### Network Access Layer
 
 - 효율성을 고려하여 OSI의 데이터 링크, 물리 계층을 합쳤다.
 - LAN : Ethernet, IEEE 802.11(wifi), FDDI 등
@@ -260,14 +262,14 @@ mermaid: true
 
 ![protocolStack](/assets/img/protocolStack.png)
 
-#### Application 응용 계층 
+### Application 응용 계층 
 
 - 송수신측 사이 주고 받는 서비스에 따라 응용 계층의 프로토콜이 달라진다.
 - 클라이언트(웹 브라우저)가 HTML 문서 요청 ➡️ HTTP 프로토콜
 - 클라이언트가 메일 요청 ➡️ SMTP
 - 클라이언트가 파일 요청 ➡️ FTP
 
-#### Transport 전송 계층 
+### Transport 전송 계층 
 
 - 데이터 전송의 신뢰성을 보장하기 위한 계층으로 송신 측에서 수신 측으로 패킷이 정상적으로 전달되었는지 확인하는 역할을 한다.
 - TCP (전송 제어 프로토콜) : 신뢰성과 정확성을 추구하는 연결형 통신 프로토콜을 따르기 때문에 신뢰할 수 있는 연결을 위해 3-way 핸드쉐이크 과정을 거친다. 
@@ -277,13 +279,13 @@ mermaid: true
   - DNS서버에 대한 조회 등 짧은 제어용 데이터를 송/수신할 경우 사용된다.
   > DNS : 사용자에게 친숙한 도메인 이름을 IP 주소로 변환하는 인터넷 표준 프로토콜의 구성 요소
 
-#### Network 계층 
+### Network 계층 
 
 - 데이터를 원하는 목적지로 전송한다. 데이터 패킷들이 라우터를 거쳐 수신 측으로 전달된다.
 - 라우터는 데이터의 목적지가 정해지면 해당 목적지까지 어떤 경로로 가는 것이 효율적인지 파악한다.
 - 경로를 결정하기 전 원하는 네트워크를 식별하기 위한 목적지의 주소 정보인 IP 주소를 확인하는데, 목적지 IP 주소까지 어떤 경로를 거쳐 데이터를 보낼지 결정하는 것을 라우팅이라고 한다.
 
-#### Data Link 계층 
+### Data Link 계층 
 
 - 송/수신측 사이에 경로가 결정되었으면 링크 계층은 한 노드에서 인접한 노드로 패킷을 보내기 위한 역할을 한다.
 - 위의 계층을 모두 거칠 경우 데이터는 서버의 LAN(Local Area Network)에 도착한다.
@@ -304,27 +306,33 @@ mermaid: true
   - MAC은 충돌이 발생하지 않게 하거나 충돌이 발생해도 재전송하여 모든 장치가 매체에 접근 가능하도록 만들어준다.
   - 유선에서는 브로드캐스트가 잘 없지만, 무선 통신은 모든 장치가 동일한 매체(공기 중의 전자기파)를 사용하기 때문에 무선 통신 성능에서 MAC이 중요한 역할을 한다.
 
-#### Physical 계층 
+### Physical 계층 
 
 - 컴퓨터와 네트워크 장비를 연결하고 컴퓨터와 네트워크 장비 간 전송되는 데이터를 전기 신호로 변환한다.
 - 컴퓨터 내부에 존재하는 랜 카드가 0과 1로 이뤄진 비트열을 전기 신호로 변환하는 역할을 수행한다.
 
 <br/>
 
-### iOS에서의 네트워크 통신 방식
+
+## ✏️ iOS 앱에서 네트워크 통신을 하는 방법에는 어떤 것들이 있나요?
+
+---
 
 - iOS에서는 네트워크 통신을 위한 다양한 라이브러리와 프레임워크를 제공한다.
-  - URLSession, Alamofire 등
+  - URLSession, Alamofire, Combine과 Swift Concurrency 등
 - iOS에서는 보안 통신을 위해 주로 HTTPS를 사용한다. 
   - iOS 9부터는 <span style="color:#9fb584">**App Transport Security (ATS)**</span>가 도입되어 앱이 기본적으로 안전한 네트워크 연결(HTTPS)을 사용하도록 권장한다.
 
-#### URLSession
+<br/>
+
+### URLSession
 
 - Foundation Framework에서 지원하는 iOS 앱과 서버간 데이터를 주고받기 위해 사용되는 API이다.
   - url로 표시되는 endpoint로 부터 데이터를 다운로드하거나 endpoint로 업로드를 수행하는 API이다.
-- 데이터를 비동기적으로 주고 받을 수 있으며 HTTP, HTTPS, FTP 등의 프로토콜을 지원한다.
+- 데이터를 <span style="color:#9fb584">**비동기적**</span>으로 주고 받을 수 있으며 HTTP, HTTPS, FTP 등의 프로토콜을 지원한다.
   - 비동기 작업을 지원하여 네트워크 요청 중에도 UI가 멈추지 않도록 도와준다.
   - iOS 앱이 실행중이지 않을 때 백그라운드에서 다운로드를 수행할 수 있다.
+- <span style="color:#9fb584">**파일 다운로드, 업로드 등을 처리**</span>할 수 있다.
 - 인증, 쿠키 관리, 캐시 관리 등을 지원한다.
 - 통신 시 `Requst`와 `Response`를 기본 구조로 가진다.
 - Request
@@ -333,6 +341,8 @@ mermaid: true
 - Response
   - 설정된 `Completion Handler`로 Response를 받는 형태 / `URLSessionDelegate`를 통해 지정 메소드를 호출하는 형태가 있다.
   - background 상태에서의 동작이나, 인증 및 캐싱을 default 옵션으로 사용하지 않는 경우 Delegate 패턴을 사용한다.
+- 장점 : iOS에서 기본 제공되므로 별도의 라이브러리 추가가 필요 없고, 다양한 요청 방식(GET, POST 등)을 지원한다.
+- 단점 : 추가적인 설정이나 비동기 처리를 위해 코드가 복잡해질 수 있다.
 
 <details>
 <summary>Response 받는 법 (Completion Handler, URLSessionDelegate) 💡</summary>
@@ -423,7 +433,9 @@ mermaid: true
   }
 
   ```
-#### Alamofire와 같은 외부 라이브러리를 사용하지 않고 URLSession을 사용할 때 장점
+
+
+### Alamofire와 같은 외부 라이브러리를 사용하지 않고 URLSession을 사용할 때 장점
 
 - 경량성 및 의존성 감소
   - URLSession은 Swift 표준 라이브러리의 일부이기 때문에, 별도의 외부 라이브러리를 추가할 필요가 없다.
@@ -448,7 +460,7 @@ mermaid: true
 
 <br/>
 
-#### session 종류
+### session 종류
 
 - `shared session`
   - 싱글턴 패턴 구조로 단순한 네트워크 요청에 사용한다. 
@@ -474,7 +486,7 @@ mermaid: true
 
 <br/>
 
-#### task 종류
+### task 종류
 
 - `Data task` : NSData객체를 사용하여 데이터를 보내고 받는다. 백그라운드 세션 지원을 하지 않는다.
 - `Upload task` : data task와 유사하나, 파일 형식 데이터 전송을 지원하며, 백그라운드에서 업로드가 가능하다.
@@ -482,15 +494,21 @@ mermaid: true
 
 <br/>
 
-#### Life Cycle
+
+### URLSession의 기본 사용 방법 (URLSession Life Cycle)
 
 1. `URLSessionConfiguration`을 설정하여 `URLSession` 인스턴스를 생성한다.
-2. `URLRequest`를 생성한다. 요청 보낼 url과 HTTP 메서드, 헤더, 바디를 설정한다.
-3. 적절한 `URLSessionTask`를 생성하고, 이에 맞는 `Completion Handler`나 `Delegate` 메소드를 작성한다.
-4. Task를 `resume` 해준다.
+2. `URL`을 생성한다. 
+   1. 유효한 URL인지 확인한다.
+3. `URLRequest`를 생성한다. 
+   1. 요청 보낼 url과 HTTP 메서드, 헤더, 바디를 설정한다.
+4. 적절한 `URLSessionTask`를 생성한다. 
+   1. dataTask, uploadTask, downloadTask 중 하나의 작업을 생성한다.
+   2. 해당 작업은 요청이 완료되면 클로저를 통해 data, response, error를 반환한다.
+5. Task를 `resume` 해준다.
    1. `dataTask()` 메소드 중 하나를 사용하여 data task를 생성하면 처음에는 `suspended` 상태가 된다.
    2. 그러므로 task를 시작하는 `resume()` 메소드를 명시적으로 호출해야 한다.
-5. Task가 완료되면 `Completion Handler` 클로저가 실행된다.(JSON 데이터 파싱, 전송 확인 완료 등)
+6. Task가 완료되면 `Completion Handler` 클로저가 실행된다.(JSON 데이터 파싱, 전송 확인 완료 등)
 
 ``` swift
 
@@ -541,15 +559,196 @@ session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: E
 
 <br/>
 
-#### Alamofire
+### Alamofire (서드파티 라이브러리)
 
 - HTTP 네트워킹을 위해 스위프트 기반으로 개발된 비동기 라이브러리로 iOS와 macOS에서 사용 가능하다.
   - 오직 swift로만 작성된 프레임워크이다.
 - url세션에 기반한 라이브러리로 네트워킹 작업을 단순화하고 네트워킹을 위한 다양한 메서드와 json 파싱 등을 제공한다.
-- URLSession에 비해 코드를 간소화할 수 있어 가독성이 좋으며 직관적인 사용법을 가지고 있다.
-  - 여러 기능들을 직접 구축하지 않아도 쉽게 사용할 수 있다.
+- URLSession에 비해 <span style="color:#9fb584">**코드를 간소화할 수 있어 가독성이 좋으며 직관적인 사용법**</span>을 가지고 있다.
 - 서버로 보낼 요청을 간편하게 구성 가능하다.
 - 서버의 응답 컨텐츠 타입에 맞추어 사용 가능한 다양한 메소드를 제공한다.
+- 장점 : 코드가 간결해지고 가독성이 높아지며, JSON 파싱, 파라미터 인코딩, 인증 등 추가 기능을 쉽게 사용할 수 있다.
+- 단점 : 앱에 서드파티 라이브러리를 추가해야 하므로, 업데이트에 신경을 써야 한다.
+
+``` swift
+let url = APIConstrants.baseURL + "/member/memberLogin"
+        
+let body : Parameters = [
+    "memberId" : id,
+    "memberPw" : pw
+]
+
+let dataRequest = AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: header)
+
+dataRequest.responseData(completionHandler: { response in
+    switch response.result {
+    case .success:
+        if let data = response.value {
+            print(data)
+            guard let decodedData = try? JSONDecoder().decode(Member.self, from: data) else {
+                completion(false)
+                return
+            }
+            self.member = decodedData
+                UserDefaults.standard.set(2, forKey: "userType")
+            UserDefaults.standard.set(decodedData.name, forKey: "name")
+            UserDefaults.standard.set(decodedData.id, forKey: "pk")
+                UserDefaults.standard.set(-1, forKey: "shelterPk")
+
+            completion(true)
+        }
+    case .failure:
+        print("error : \(response.error!)")
+    }
+})
+```
+
+<br/>
+
+#### 서드파티 라이브러리(Alamofire) 사용 이유
+
+네트워크 요청과 처리를 단순화하고, 유지보수성과 코드 안정성을 크게 높일 수 있어 개발 효율성이 향상된다. 특히, 앱이 복잡한 네트워크 통신을 많이 수행해야 하는 경우 Alamofire 같은 서드파티 라이브러리를 사용하는 것이 큰 이점이다.
+
+1. 코드 간결화와 가독성 향상
+ - Alamofire는 URLSession의 복잡한 설정과 비동기 작업을 간결한 API로 대체해 코드 가독성을 높이고, 코드 길이를 줄여준다.
+ - 특히 JSON 파싱이나 파라미터 인코딩 등 자주 사용되는 네트워크 작업을 단순화하여, 코드 작성이 더 직관적이고 빠르다.
+2. 추가 기능 제공
+  - Alamofire는 URLSession에 비해 다양한 기능을 기본으로 제공한다.
+  - 예를 들어, 파라미터 인코딩, 인증 처리, 파일 업로드 및 다운로드, 요청 재시도 기능 등 실무에 자주 필요한 기능들이 내장되어 있어, 별도로 구현하지 않아도 된다.
+3. 비동기 코드 처리의 간편함
+  - Alamofire는 클로저 기반의 API를 사용하여 비동기 작업 처리를 간단하게 만든다.
+  - URLSession으로 직접 처리할 때의 복잡한 콜백 체인이나 에러 처리 로직을 줄여주고, 코드의 흐름이 더 직관적이다.
+4. 유지보수와 협업 효율성 향상
+  - Alamofire는 널리 사용되는 오픈소스 라이브러리로, 업데이트가 활발하며 커뮤니티와 문서 지원도 풍부하다.
+  - 이를 통해 코드의 유지보수성과 확장성을 높일 수 있으며, 협업 시 다른 개발자들도 쉽게 이해하고 사용할 수 있다.
+5. 테스트 지원
+  - Alamofire는 네트워크 요청을 테스트 목적으로 모킹(Mock)할 수 있는 기능을 제공한다.
+  - 이를 통해 테스트 작성이 간편해지고, 네트워크 의존성을 낮추어 개발 과정에서의 테스트 효율을 높일 수 있다.
+
+
+<br/>
+
+#### Swift Concurrency와 Alamofire의 비교
+
+1. 코드 간결성과 가독성
+  - Swift Concurrency
+    - async/await 문법은 비동기 코드를 동기 코드처럼 작성할 수 있어, 비동기 처리 코드의 가독성이 좋다.
+    - URLSession을 활용해 비동기 네트워크 통신을 쉽게 구현할 수 있어 <span style="color:#9fb584">**기본적인 네트워크 요청에 적합**</span>하다.
+  - Alamofire
+    - 클로저 기반의 API를 통해 비동기 코드 작성이 간결하며, 특히 JSON 파싱이나 요청 파라미터 인코딩 등에서 코드의 가독성을 높이는 기능을 제공힌다.
+    - 네트워크 통신에 필요한 다양한 기능을 제공하므로, <span style="color:#9fb584">**복잡한 네트워크 처리에서는 Alamofire가 더 직관적**</span>일 수 있습니다.
+2. 추가 기능 제공 여부
+  - Swift Concurrency
+    - async/await와 URLSession만으로는 <span style="color:#9fb584">**파라미터 인코딩, 네트워크 상태 모니터링, 요청 재시도 등 다양한 기능이 기본 제공되지 않는다.**</span>
+    - 추가 기능이 필요할 경우 직접 구현해야 하므로, <span style="color:#9fb584">**상대적으로 Alamofire에 비해 기능 확장성이 떨어질 수 있다.**</span>
+  - Alamofire
+    - Alamofire는 파라미터 인코딩, 인증, 파일 업로드/다운로드, 네트워크 모니터링 등의 기능이 내장되어 있어, <span style="color:#9fb584">**네트워크 요청의 다양한 요구사항을 손쉽게 처리할 수 있다.**</span>
+    - 이러한 추가 기능 덕분에 Alamofire는 복잡한 네트워크 통신이 필요한 경우에 적합하다.
+3. 성능과 네이티브 지원
+  - Swift Concurrency
+    - 네이티브로 지원되기 때문에, <span style="color:#9fb584">**추가적인 라이브러리 의존성 없이 네트워크 요청을 구현**</span>할 수 있다.
+    - 네이티브로 최적화되어 있으며, 성능 측면에서도 유리하다.
+    - 특히 iOS 15 이상을 지원하는 앱에서는 Swift Concurrency를 사용해 네이티브 성능을 최대한 활용할 수 있다.
+  - Alamofire
+    - Alamofire는 URLSession을 기반으로 동작하므로, Swift Concurrency와 같은 네이티브 최적화 이점을 직접 제공하지는 않는다.
+    - 그러나, <span style="color:#9fb584">**Alamofire는 비동기 네트워크 작업을 최적화해 설계**</span>되어 있어 성능적으로도 충분히 우수하며, 다양한 기능을 제공하므로 기능 확장성 측면에서 이점이 있다.
+4. 호환성과 지원 기기
+  - Swift Concurrency
+    - iOS 15 이상에서만 지원된다.
+  - Alamofire
+    - Alamofire는 iOS 12 이상의 환경에서 사용할 수 있어, 더 넓은 범위의 기기를 지원할 수 있다.
+
+➡️ 결론 : 앱의 지원 대상 iOS 버전과 네트워크 요구사항에 따라 선택한다.
+
+- Swift Concurrency가 유리한 경우
+  - 최신 iOS 버전(iOS 15 이상)만을 지원하는 앱에서, 간단한 네트워크 요청 및 응답 처리가 필요한 경우
+  - 추가적인 네트워크 기능이 필요 없고, 네이티브 성능과 코드 간결성을 우선시할 경우
+- Alamofire가 유리한 경우
+  - 다양한 네트워크 관련 기능(인증, 파라미터 인코딩, 파일 업로드/다운로드 등)이 필요하거나, 복잡한 네트워크 요청을 자주 사용하는 경우
+  - 하위 iOS 버전 지원이 필요한 경우
+  - 네트워크 처리가 복잡해지고, 유지보수와 확장성을 위해 이미 구축된 서드파티 라이브러리를 활용하고자 할 때
+
+
+<br/>
+
+### Combine 프레임워크 (iOS 13 이상)
+
+- Apple이 제공하는 <span style="color:#9fb584">**리액티브 프로그래밍 프레임워크**</span>이다.
+- 비동기 데이터를 처리하고, 네트워크 요청 결과를 구독하고 반응형으로 처리할 수 있게 한다.
+- <span style="color:#9fb584">**네트워크 요청과 결과를 하나의 데이터 스트림으로 다룰 수 있으며**</span>, URLSession과 함께 사용하여 네트워크 데이터를 처리할 수 있다.
+- 장점: 데이터 스트림 기반의 코드 작성이 가능해 비동기 처리가 직관적이고, 여러 비동기 작업을 결합하기 쉬워진다.
+- 단점: Combine은 iOS 13 이상에서만 사용할 수 있으며, 초기에 러닝 커브가 다소 있을 수 있다.
+
+``` swift
+import Combine
+import Foundation
+
+var cancellables = Set<AnyCancellable>()
+let url = APIConstrants.baseURL + "/member/memberLogin"
+
+URLSession.shared.dataTaskPublisher(for: url)
+    .map { $0.data }
+    .decode(type: [Post].self, decoder: JSONDecoder())
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .finished:
+            print("Finished successfully")
+        case .failure(let error):
+            print("Error: \(error)")
+        }
+    }, receiveValue: { posts in
+        print("Received posts: \(posts)")
+    })
+    .store(in: &cancellables)
+```
+
+<br/>
+
+### Swift Concurrency (iOS 15 이상)
+
+- Swift 5.5부터 도입된 Swift Concurrency는 <span style="color:#9fb584">**async/await를 사용하여 비동기 네트워크 요청을 더 간결하게 작성할 수 있으며, 에러 처리를 throws 키워드로 처리할 수 있다.**</span>
+  - 에러 던지기: try await와 throws를 활용해 에러가 발생하면 자동으로 catch 블록에서 처리된다.
+  - HTTP 상태 코드 및 데이터 파싱 에러 확인: 상태 코드와 JSON 파싱 오류를 do-catch 블록 내에서 간결하게 처리할 수 있다.
+- 기존의 비동기 콜백 기반의 복잡한 코드를 간소화 한다.
+- URLSession도 async/await와 함께 사용할 수 있도록 업데이트되었다.
+- 장점: async/await를 통해 비동기 코드의 가독성과 유지보수성이 향상되며, 비동기 코드의 흐름을 쉽게 이해할 수 있다.
+- 단점: iOS 15 이상에서만 지원되므로, 구형 기기 지원이 필요한 앱에는 적용하기 어렵다.
+
+``` swift
+import Foundation
+
+func fetchData() async {
+    guard let url = URL(string: urlString + "/annotations") else {
+              print("Invalid URL")
+              return
+    }
+
+
+    do {
+        // 1. 네트워크 요청
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        // 2. HTTP 상태 코드 확인
+        if let httpResponse = response as? HTTPURLResponse {
+            guard 200...299 ~= httpResponse.statusCode else {
+                print("HTTP Error: Status code \(httpResponse.statusCode)")
+                return
+            }
+        }
+
+        // 3. JSON 파싱
+        let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+        print("Received JSON: \(jsonObject)")
+
+    } catch {
+        print("Network or Parsing Error: \(error.localizedDescription)")
+    }
+}
+
+Task {
+    await fetchData()
+}
+```
 
 <br/> 
 
@@ -1217,6 +1416,106 @@ session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: E
 - `500 (Internal Server Error 내부 서버 오류)` : 서버에 에러가 발생하였다.
 - `501 (Not Implemented 구현되지 않음)` : 요청한 URI의 메소드에 대해 서버가 구현하고 있지 않다.
 - `502 (Bad Gateway 불량 게이트웨이)` : 게이트웨이 또는 프록시 역할을 하는 서버가 그 뒷단의 서버로부터 잘못된 응답을 받았다.
+
+<br/> 
+
+## ✏️ 네트워크 요청 시 에러 처리는 어떻게 하나요?
+
+---
+
+- 네트워크 요청 시 에러 처리는 네트워크 통신의 신뢰성을 높이고, 사용자에게 적절한 피드백을 제공하기 위해 매우 중요하다.
+- Swift에서 네트워크 요청 에러는 URLSession의 completion handler를 통해 전달되며, 주로 인터넷 연결 문제, 서버 오류, 데이터 파싱 오류 등 다양한 상황을 다룬다.
+
+### 1. 에러 객체 확인
+
+- 요청 결과의 completion handler에서 에러 객체가 전달되는지 확인하여 에러 발생 여부를 우선 판단한다.
+- completion handler의 error가 nil이 아닌 경우, 네트워크 요청 중 연결 오류 또는 타임아웃 등의 문제가 발생했음을 의미한다.
+- error.localizedDescription을 사용하여 오류 메시지를 확인할 수 있다.
+
+### 2. HTTP 상태 코드 확인
+
+- response의 HTTP 상태 코드를 검사하여, 정상적인 응답인지 또는 특정 오류 코드(예: 404, 500 등)인지 확인한다.
+- 200...299: 성공 범위
+- 400...499: 클라이언트 오류 (예: 잘못된 요청, 인증 실패)
+- 500...599: 서버 오류 (예: 서버 내부 오류)
+
+
+### 3. 데이터 파싱 오류 확인
+
+- data가 존재하는 경우, JSON 파싱이나 모델 디코딩을 수행한다.
+- Swift의 Codable을 사용하는 경우, decode 중 발생하는 오류를 do-catch 블록으로 처리할 수 있다.
+- 데이터 형식이 예상과 다른 경우 발생하는 오류를 처리하여 앱이 크래시되지 않도록 한다.
+
+
+### 4. 에러 메시지 사용자에게 전달
+
+- 네트워크 에러 발생 시 사용자에게 적절한 메시지를 표시하여 상태를 알릴 수 있다.
+- 에러가 발생하면 UIAlertController 등을 사용해 사용자에게 에러 메시지를 알리는 것이 좋다.
+
+``` swift
+
+// URLSessionConfiguration 설정, URLSession 생성
+let session = URLSession(configuration: .default)
+// URL 설정
+guard let url = URL(string: urlString + "/annotations") else {
+          print("Invalid URL")
+          return
+}
+
+// URLRequest 설정
+var request = URLRequest(url: url)
+request.httpMethod = "POST"
+request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+request.addValue("\(userId)", forHTTPHeaderField: "userId")
+request.httpBody = requestBody
+
+// 데이터 작업 생성 및 실행
+session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+  // 1. 에러 객체 확인
+  guard error == nil else {
+      print("Error occur: insertAnnotation error calling POST - \(error.localizedDescription)")
+      return
+  }
+
+  // 2. HTTP 상태 코드 확인
+  guard let data = data, let response = response as? HTTPURLResponse {
+    switch httpResponse.statusCode {
+        case 200...299: // 성공 범위
+            print("Success: Status code \(httpResponse.statusCode)")
+        case 400...499:
+            print("Client error: Status code \(httpResponse.statusCode)")
+        case 500...599:
+            print("Server error: Status code \(httpResponse.statusCode)")
+        default:
+            print("Unexpected status code: \(httpResponse.statusCode)")
+        }
+  }
+  
+  let dateDecoder = JSONDecoder()
+  dateDecoder.dateDecodingStrategy = .formatted(self.dateformat)
+  // 3. 데이터 파싱 오류 확인
+  guard let decodedData = try? dateDecoder.decode(ResponseModel<Annotation>.self, from: data) else {
+      print("Error: insertAnnotation JSON parsing failed")
+      return
+  }
+  
+  if decodedData.status == 201 {
+      self.annotation = decodedData.data!
+      completion(self.annotation)
+  }
+  else {
+      print("insertAnnotation failed")
+  }
+// 작업 시작
+}.resume()
+```
+
+> 네트워크 에러의 주요 유형<br/>
+> 네트워크 연결 오류: 인터넷이 연결되지 않았거나 서버에 접근할 수 없는 경우<br/>
+> 타임아웃 오류: 네트워크 응답이 지연되거나 서버가 응답하지 않는 경우<br/>
+> 클라이언트 오류: 잘못된 요청 형식이나 잘못된 URL 등, 주로 400번대 HTTP 상태 코드와 관련된 오류<br/>
+> 서버 오류: 서버 내부 문제로 인해 발생하는 오류, 주로 500번대 HTTP 상태 코드와 관련된 오류<br/>
+> 데이터 파싱 오류: 응답 데이터를 JSON 또는 Codable 타입으로 파싱할 때 형식이 일치하지 않는 경우 발생하는 오류
 
 
 <br/> 

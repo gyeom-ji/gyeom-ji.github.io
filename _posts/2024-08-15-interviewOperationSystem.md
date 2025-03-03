@@ -386,6 +386,505 @@ print(first.name) // yun
   - 네트워크 통신 : 패킷 구조를 설계할 때 패딩을 고려해야 한다.
   - 파일 입출력 : 구조체를 파일에 저장하거나 읽을 때 패딩을 고려해야 한다.
 
+
+<br/>
+
+## ✏️ 메모리 관리에서 강한 참조(Strong Reference)와 약한 참조(Weak Reference)의 차이점은 무엇인가요?
+
+---
+
+- 강한 참조와 약한 참조는 Swift에서 메모리 관리와 객체 생명주기를 관리하기 위해 사용하는 참조 방식이다.
+- 이 두 참조 방식은 ARC(Automatic Reference Counting) 시스템을 통해 메모리를 효율적으로 관리하는 데 중요한 역할을 gksek.
+- 객체가 `강한 참조`로 연결되어 있으면 <span style="color:#9fb584">**ARC가 객체를 메모리에서 해제하지 않고 유지**</span>한다.
+- `약한 참조`는 <span style="color:#9fb584">**객체가 메모리에서 해제되도록 허용하여 순환 참조(Strong Reference Cycle) 문제를 방지**</span>할 수 있다.
+
+### 강한 참조
+
+- 강한 참조는 기본 참조 방식으로, <span style="color:#9fb584">**객체의 참조 횟수를 증가시키며 참조하는 동안 객체가 메모리에서 해제되지 않도록 한다.**</span>
+- 강한 참조를 사용하면, 참조가 있는 동안 <span style="color:#9fb584">**객체의 생명주기가 유지**</span>되며, 해당 객체는 ARC에 의해 메모리에서 해제되지 않는다.
+- 대부분의 속성은 기본적으로 강한 참조를 사용하며, 일반적인 객체 간의 참조에서 사용된다.
+
+``` swift
+class Person {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var person1 = Person(name: "Gyeomji")  // person1이 Person 인스턴스를 강한 참조함
+var person2 = person1                 // person2도 Person 인스턴스를 강한 참조함
+
+person1 = nil                         // person2가 여전히 강한 참조 중이므로 Person 인스턴스는 해제되지 않음
+```
+
+### 약한 참조
+
+- 약한 참조는 <span style="color:#9fb584">**객체의 참조 횟수를 증가시키지 않는**</span> 참조 방식이다.
+- 객체가 <span style="color:#9fb584">**다른 강한 참조가 없으면 ARC가 메모리에서 해제할 수 있도록 허용**</span>한다.
+- 약한 참조는 참조 대상이 해제되면 nil이 되며, <span style="color:#9fb584">**순환 참조 문제를 방지하는 데 유용**</span>하다.
+- 런타임에 값을 nil으로 변경될 수 있기 때문에 항상 옵셔널 타입의 변수로 선언한다.
+- 다른 인스턴스가 먼저 할당이 해제될 때 약한 참조를 사용한다.
+- 일반적으로 뷰 컨트롤러의 델리게이트나 순환 참조가 발생할 수 있는 상황에서 사용한다.
+- var로 선언하여야 하며, weak 키워드를 사용하고 옵셔널 타입이어야 한다.
+
+``` swift
+class Person {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+
+class Apartment {
+    var unit: String
+    weak var tenant: Person?  // 약한 참조로 선언하여 순환 참조 방지
+    init(unit: String) {
+        self.unit = unit
+    }
+}
+
+var person = Person(name: "Alice")
+var apartment = Apartment(unit: "101")
+
+apartment.tenant = person     // 약한 참조로 tenant가 person을 참조
+person = nil                  // Person 인스턴스 해제
+print(apartment.tenant)       // 출력: nil (person이 해제되면서 tenant도 nil)
+```
+
+
+<br/>
+
+## ✏️ 순환 참조(Retain Cycle)가 발생하는 경우와 해결 방법은 무엇인가요?
+
+---
+
+- 순환 참조(Retain Cycle)는 두 객체가 서로를 강하게 참조할 때 발생하는 문제로, 서로가 참조를 유지하고 있어서 메모리에서 해제되지 않는 상태이다.
+- Swift에서는 ARC(Automatic Reference Counting)가 메모리를 관리하지만, 순환 참조가 발생하면 ARC가 객체의 참조 횟수를 0으로 만들지 못해 메모리 누수가 발생한다.
+- 순환 참조는 주로 클로저와 델리게이트 패턴에서 발생할 수 있으며, 약한 참조와 미소유 참조를 사용해 해결할 수 있다.
+
+### 순환 참조가 발생하는 경우
+
+#### 1. 클래스 간 상호 참조
+
+- 두 클래스가 서로를 강하게 참조하는 경우, 양쪽 모두 참조가 남아있어서 해제되지 않는 상태가된다.
+
+``` swift
+class Person {
+    var pet: Pet?
+    deinit {
+        print("Person is being deinitialized")
+    }
+}
+
+class Pet {
+    var owner: Person?
+    deinit {
+        print("Pet is being deinitialized")
+    }
+}
+
+var gyeomji: Person?
+var ben: Pet?
+
+gyeomji = Person() // gyeomji -> Person (strong reference)
+ben = Pet() // ben -> Pet (strong reference)
+
+gyeomji!.pet = ben // ben, Person -> Pet (strong reference)
+ben!.owner = gyeomji // gyeomji, Pet -> Person (strong reference)
+
+gyeomji = nil // Person -> Pet (strong reference)
+ben = nil // Pet -> Person (strong reference)
+```
+
+<br/>
+
+#### 2. 클로저에서의 강한 참조
+
+- 클로저는 자신이 캡처하는 객체를 기본적으로 강하게 참조하므로, 클로저 내부에서 객체의 프로퍼티나 메서드를 참조할 때 순환 참조가 발생할 수 있다.
+
+``` swift
+class ViewController {
+    var name = "Main ViewController"
+    
+    lazy var printName: () -> Void = {
+        print(self.name)  // self를 강하게 참조하여 순환 참조 발생
+    }
+}
+
+let viewController = ViewController()
+viewController.printName()
+```
+
+
+### 순환 참조 해결 방법
+
+#### 1. 약한 참조 weak 사용
+
+- 서로를 참조하는 두 객체 중 하나를 약한 참조(weak)로 선언하여, <span style="color:#9fb584">**참조 횟수를 증가시키지 않고 객체가 해제**</span>될 수 있도록 한다.
+- 해당 인스턴스가 <span style="color:#9fb584">**할당 해제 되면 ACR는 약한 참조를 nil으로 자동 설정**</span>한다.
+- 런타임에 값을 nil으로 변경될 수 있기 때문에 <span style="color:#9fb584">**항상 옵셔널 타입의 변수로 선언**</span>한다.
+- <span style="color:#9fb584">**다른 인스턴스가 먼저 할당이 해제될 때**</span> 약한 참조를 사용한다.
+
+``` swift
+class Apartment {
+    weak var tenent: Person? // 어느 시점에 거주자가 없을 수도 있음
+    deinit {
+        print("Apartment is being deinitialized")
+    }
+}
+
+class Person {
+    var apartment: Apartment?
+    deinit {
+        print("Person is being deinitialized")
+    }
+}
+
+var villiv: Apartment?
+var gyeomji: Person?
+
+villiv = Apartment() // Apartment RC = 1
+gyeomji = Person() // Person ReferenceCount = 1
+
+villiv!.tenent = gyeomji // Person RC = 1 (Apartment -> Person  약한 참조는 카운트를 증가시키지 않음)
+gyeomji!.apartment = villiv // Apartment RC = 2
+
+villiv = nil // Apartment RC = 1
+gyeomji = nil // Person RC = 0 -> Person 인스턴스 해제 -> (Person -> Apartment) 강한 참조 - 1 -> Apartment RC = 0
+// print
+// Person is being deinitialized
+// Apartment is being deinitialized
+```
+
+<br/>
+
+#### 2. 미소유 참조 unowned 사용
+
+- 약한 참조와 비슷하지만, <span style="color:#9fb584">**nil을 허용하지 않는 경우 사용**</span>한다.
+- 미소유 참조는 <span style="color:#9fb584">**객체가 항상 존재할 것으로 확신할 때 사용하며, 객체가 해제될 때까지 미소유 참조는 참조를 유지**</span>한다.
+  - 스턴스가 할당 해제된 후 미소유 참조 값에 접근시 런타임 에러가 발생한다.
+- <span style="color:#9fb584">**다른 인스턴스의 수명이 같거나 더 긴 경우에 사용**</span>한다. 
+
+``` swift
+class Person {
+    var card : Card? // 카드를 가지거나 가지지 않을 수 있다
+    deinit {
+        print("Person is being deinitialized")
+    }
+}
+
+class Card {
+    let company: String
+    unowned let owner: Person // 항상 owner가 존재함 -> owner보다 오래 지속되지 않음
+    init(company: String, owner: Person) {
+            self.company = company
+            self.owner = owner
+    }
+    deinit {
+        print("\(company) card is being deinitialized")
+    }
+}
+
+var gyeomji: Person?
+
+gyeomji = Person() // Person ReferenceCount = 1
+gyeomji!.card = Card(company: "sinhan", owner: gyeomji!)// Person -> Card RC = 1 (Card -> Person 미소유 참조는 카운트를 증가시키지 않음)
+
+gyeomji = nil // Person RC = 0 -> Person 인스턴스 해제 -> (Person -> Card) 강한참조 - 1 -> Card RC = 0
+// print
+// Person is being deinitialized
+// sinhan card is being deinitialized
+```
+
+<br/>
+
+#### 3. 클로저에서 캡처 목록 Capture List 사용
+
+- 클로저가 객체를 강하게 참조하지 않도록 캡처 목록을 사용하여 참조 유형을 약한 참조 [weak self] 또는 미소유 참조 [unowned self]로 지정할 수 있다.
+- [weak self]를 사용해 self를 약한 참조로 캡처하여 클로저와 self 간의 순환 참조를 방지한다.
+- 만약 self가 해제된 경우 nil로 설정되어 클로저 내부에서 안전하게 nil 체크를 할 수 있다.
+
+``` swift
+class ViewController {
+    var name = "Main ViewController"
+    
+    lazy var printName: () -> Void = { [weak self] in  // 캡처 목록으로 약한 참조 사용
+        guard let self = self else { return }
+        print(self.name)
+    }
+}
+
+let viewController = ViewController()
+viewController.printName()
+```
+<br/>
+
+## ✏️ 클로저에서 [weak self]와 [unowned self]의 차이는 무엇인가요?
+
+---
+
+### [weak self]
+
+- 약한 참조를 사용하여 클로저가 self를 참조하도록 만든다.
+- 약한 참조는 <span style="color:#9fb584">**객체가 메모리에서 해제될 수 있도록 허용하므로 참조된 객체가 해제되면 nil이 된다.**</span>
+- [weak self]를 사용할 때 <span style="color:#9fb584">**self는 옵셔널(self?)로 처리**</span>해야 한다.
+- <span style="color:#9fb584">**객체가 해제될 수 있는 가능성이 있는 경우에 사용**</span>한다.
+- 보통 클로저 내부에서 <span style="color:#9fb584">**self의 존재 여부를 체크하고 안전하게 사용**</span>하기 위해 많이 사용된다.
+
+``` swift
+class ViewController {
+    var name = "Main ViewController"
+    
+    func setupClosure() {
+        let closure = { [weak self] in
+            guard let self = self else {
+                print("self가 해제되었습니다.")
+                return
+            }
+            print("ViewController name: \(self.name)")
+        }
+        closure()
+    }
+}
+```
+
+### [unowned self] 
+
+- 미소유 참조를 사용하여 클로저가 self를 참조하게 한다.
+- <span style="color:#9fb584">**self가 항상 존재할 것으로 가정하므로 옵셔널이 아니며 self가 해제되어도 nil이 되지 않는다.**</span>
+  - self가 해제된 후 참조하면 런타임 에러가 발생할 수 있다.
+- self가 항상 존재한다고 확신할 때 사용한다.
+
+``` swift
+class ViewController {
+    var name = "Main ViewController"
+    
+    func setupClosure() {
+        let closure = { [unowned self] in
+            print("ViewController name: \(self.name)")
+        }
+        closure()
+    }
+}
+```
+
+<br/>
+
+## ✏️ iOS 앱에서 Multi-threading을 구현하는 방법은 무엇인가요?
+
+---
+
+- `GCD(Grand Central Dispatch)`, `Operation 및 OperationQueue`, `Swift Concurrency (async/await)`가 주로 사용된다.
+- 각 방법은 비동기 작업을 효과적으로 관리하고, 앱의 성능과 사용자 경험을 향상시키는 데 중요한 역할을 한다.
+- 간단한 비동기 작업: GCD 사용
+- 작업 간 종속성이나 재사용이 필요한 작업: Operation & OperationQueue 사용
+- 최신 Swift Concurrency 기능 사용 가능(iOS 15 이상): async/await 사용
+
+### GCD(Grand Central Dispatch)
+
+- Apple에서 제공하는 멀티스레딩 API로, 간단하게 비동기 작업을 처리할 수 있다.
+- 주로 비동기 큐와 동기/비동기 메서드를 사용하여 작업을 백그라운드에서 처리하고, 필요할 때 메인 스레드로 전환하는 방식으로 구현한다.
+- `DispatchQueue.main` : 메인 큐, UI 업데이트는 항상 메인 큐에서 실행되어야 한다.
+- `DispatchQueue.global()` : 백그라운드 큐, 네트워크 호출이나 데이터 처리 같은 CPU 집중 작업을 수행할 때 사용한다.
+
+``` swift
+DispatchQueue.global().async {
+    // 백그라운드 작업 (예: 네트워크 호출, 데이터 처리)
+    let result = performHeavyTask()
+    
+    DispatchQueue.main.async {
+        // 메인 큐에서 UI 업데이트
+        self.updateUI(with: result)
+    }
+}
+```
+
+### Operation 및 OperationQueue
+
+- GCD를 기반으로 한 더 높은 수준의 API로, 작업 간의 종속성 설정이나 재사용이 가능한 작업을 객체 형태로 정의하는 등 GCD보다 더 많은 기능을 제공한다.
+- OperationQueue를 통해 여러 Operation을 큐에 넣어 비동기로 실행할 수 있으며, 큐의 우선순위와 동시성 처리를 조절할 수 있다.
+- `Operation` : 작업을 객체로 정의하여 관리할 수 있습니다.
+- `OperationQueue` : 여러 Operation 객체를 관리하고, 비동기 실행 및 종속성 설정이 가능합니다.
+
+``` swift
+let operationQueue = OperationQueue()
+
+let operation1 = BlockOperation {
+    // 작업 1
+    print("Operation 1")
+}
+
+let operation2 = BlockOperation {
+    // 작업 2
+    print("Operation 2")
+}
+
+// 종속성 설정: operation1이 완료된 후 operation2가 실행됨
+operation2.addDependency(operation1)
+
+operationQueue.addOperation(operation1)
+operationQueue.addOperation(operation2)
+```
+
+### Swift Concurrency (async/await)
+
+- Swift Concurrency는 Swift 5.5부터 도입된 비동기/동시성 처리를 위한 최신 기능으로, async와 await 키워드를 사용해 비동기 작업을 동기 코드처럼 간단하게 구현할 수 있다. 
+- Task와 TaskGroup 등을 통해 멀티스레딩 작업을 보다 안전하고 직관적으로 처리할 수 있다.
+- `async/await` : 비동기 함수는 async 키워드로 선언되며, 호출 시 await 키워드로 호출하여 비동기 작업을 동기 코드처럼 처리할 수 있다.
+- `Task` : async 함수 외부에서 비동기 작업을 생성하는 방법이다.
+- `TaskGroup` : 여러 작업을 동시에 처리하고, 완료 시 결과를 수집할 수 있다.
+ 
+``` swift
+func fetchData() async -> Data {
+    // 네트워크 호출 (예시)
+}
+
+func updateUI(with data: Data) {
+    // UI 업데이트
+}
+
+Task {
+    // fetchData() 비동기로 호출
+    let data = await fetchData()
+    // UI 업데이트 메인 스레드에서 수행
+    await MainActor.run {
+        updateUI(with: data)
+    }
+}
+```
+
+<br/>
+
+## ✏️ DispatchQueue와 OperationQueue의 차이점은 무엇인가요?
+
+---
+
+### Dispatch Queue
+
+- 앱의 메인 스레드 또는 백그라운드 스레드에서 작업의 실행을 직렬 또는 동시에 관리하는 객체이다.
+- 항상 선입선출 방식으로 실행된다.
+- 대기열에 추가된 항목은 시스템이 관리하는 스레드 풀에서 처리하고 작업을 완료하면 알아서 스레드를 해제한다.
+- 단순하고 간단한 비동기 작업에 적합하다.
+- Serial Disptach Queue : 한 번에 하나의 작업만을 실행하며 해당 작업이 대기열에서 제외되고 새로운 작업이 시작되기 전까지 대기한다.
+  - 별도로 명시하지 않으면 DispatchQueue의 기본은 Serial이다.
+- Concurrent Disptach Queue : 이미 시작된 작업이 완료될 때까지 기다리지 않고 가능한 많은 작업을 진행한다.
+  - 즉, 병렬처리 방식이다.
+
+### Operation Queue
+
+- NSOperation 객체의 우선순위 및 준비 상태에 따라 대기열에 있는 객체를 실행한다. (FIFO ❌)
+  - Operation Queue에 추가된 작업은 작업이 완료될 때까지 대기열에 남아 있다.
+  - 작업이 추가된 후에는 대기열에서 직접 제거할 수 없다.
+- 동시에 실행할 수 있는 연산(Operation)의 최대 수를 지정할 수 있다. (GCD ❌)
+- KVO를 사용할 수 있는 프로퍼티가 있다. (GCD ❌)
+  > KVO (Key-Value Observing) : A 객체에서 B 객체의 <span style="color:#9fb584">**프로퍼티가 변화됨을 감지**</span>할 수 있는 패턴이다.
+  - operations (read only) : 현재 큐에 있는 작업들
+  - operationCount (read only) : 현재 큐에 있는 작업의 개수
+  - maxConcurrentOpeartionCount (readable and writable) : 큐에서 동시에 실행할 수 있는 작업의 최대 개수 
+  - suspended (readable and writable) : 실행 작업을 적극적으로 스케쥴링하고 있는지 여부에 대한 Boolean 값
+  - name (readable and writable) : operationQueue의 이름
+- Operation 일시 중지, 다시 시작 및 취소를 할 수 있다. (GCD ❌)
+- 작업 간의 의존성을 직관적으로 설정할 수 있으며, 작업을 취소하고 대기 중인 작업을 무시하는 등의 작업 관리가 쉽게 가능하다.
+- 코드가 보다 명확하며 작업의 의존성 및 실행 순서를 이해하기 쉽다.
+- GCD 위에 구축되어 있으며, 더 복잡한 작업 관리 및 의존성 처리를 위해 설계되었으므로, 작업 추가 및 작업간 의존성이 큰 앱에서 유용할 수 있다.
+
+> Operatin : 백그라운드 스레드에서 실행할 Task를 캡슐화한 객체
+
+
+<br/>
+
+## ✏️ 동시성 프로그래밍에서 Race Condition을 방지하는 방법은 무엇인가요?
+
+---
+
+- `Race Condition` : <span style="color:#9fb584">**여러 스레드가 동시에 동일한 자원에 접근하여 데이터의 일관성을 깨뜨리는 문제**</span>이다.
+- <span style="color:#9fb584">**자원의 접근을 순차적으로 제어하거나 스레드 간의 접근을 동기화하는 방법**</span>이 있다.
+
+### DispatchQueue의 Serial Queue 사용
+
+- 직렬 큐(Serial Queue)는 하나의 스레드에서만 순차적으로 작업을 처리하므로, 동시에 여러 스레드가 접근하지 못하게 제어할 수 있다. 
+- 공통 자원에 대한 접근을 직렬 큐로 제한하면 Race Condition을 방지할 수 있다.
+
+``` swift
+let serialQueue = DispatchQueue(label: "com.example.serialQueue")
+
+serialQueue.async {
+    // 자원에 접근하는 작업
+    sharedResource += 1
+}
+```
+
+### Dispatch Semaphore 사용
+
+- 세마포어(Semaphore)는 특정 자원에 접근할 수 있는 스레드 수를 제한하는 방식으로, 여러 스레드가 동일 자원에 접근하는 것을 조절할 수 있다. 
+- 동시에 하나의 스레드만 자원에 접근할 수 있도록 세마포어를 1로 설정하여 Race Condition을 방지한다.
+  - 하나의 스레드가 자원에 접근하는 동안 다른 스레드는 대기한다.
+
+``` swift
+let semaphore = DispatchSemaphore(value: 1)
+
+func updateSharedResource() {
+    semaphore.wait() // 접근 시작
+    sharedResource += 1
+    semaphore.signal() // 접근 종료
+}
+```
+
+### Swift의 Actor 사용 (Swift Concurrency)
+
+- Swift 5.5부터 도입된 Actor 모델은 데이터를 보호하기 위한 스레드 안전한 방식을 제공한다.
+- Actor는 내부 데이터에 대한 접근을 단일 스레드에서만 처리하도록 제한해, 여러 스레드가 동시에 데이터에 접근하지 못하도록 한다.
+  - value 프로퍼티는 Actor가 관리하여, 동시에 접근하는 Race Condition을 방지할 수 있다.
+
+``` swift
+actor Counter {
+    private var value = 0
+
+    func increment() {
+        value += 1
+    }
+
+    func getValue() -> Int {
+        return value
+    }
+}
+
+let counter = Counter()
+
+Task {
+    await counter.increment()
+    print(await counter.getValue())
+}
+```
+
+
+<br/>
+
+## ✏️ 메인 스레드에서 UI 업데이트를 해야 하는 이유는 무엇인가요?
+
+---
+
+- UIKit가 <span style="color:#9fb584">**메인 스레드에서의 작업을 전제로 설계**</span>되었기 때문이다.
+- <span style="color:#9fb584">**메인 스레드를 UI요소와 이벤트 처리의 전담 스레드로 사용하며, 이를 통해 UI 업데이트가 일관되고 안정적으로 이뤄지도록 보장**</span>한다.
+
+### 이유 1. UIKit는 메인 스레드에서만 안전하게 작동
+
+- UIKit 프레임워크의 모든 UI 컴포넌트(ex. UIView, UILabel, UIButton)는 메인 스레드에서 안전하게 작동되도록 설계되었다.
+- 메인 스레드 이외의 스레드에서 UI를 업데이트하면 UIKit의 상태가 예기치 않게 변경될 수 있어 **앱이 비정상적으로 동작하거나 충돌이 발생**할 수 있다.
+
+### 이유 2. 사용자 경험의 일관성 유지
+
+- 메인 스레드는 UI와 사용자 이벤트 처리를 전담하므로, UI 업데이트가 메인 스레드에서 이뤄져야 사용자가 보는 화면과 상호작용이 일관성을 유지한다.
+- 만약 메인 스레드 외부에서 UI를 업데이트한다면, 다른 스레드의 작업 타이밍에 따라 UI가 엉뚱한 시점에 업데이트되거나 화면 깜빡임이 발생할 수 있다.
+
+### 이유 3. 데이터 레이스 및 동기화 문제 방지
+
+- <span style="color:#9fb584">**UI 업데이트를 여러 스레드에서 동시에 수행하면 Race Condition이 발생**</span>할 수 있다.
+- 메인 스레드가 아닌 곳에서 UI를 변경하면 Race Condition이 발생할 가능성이 높아진다.
+- 메인 스레드에서만 UI 업데이트를 처리하면 이러한 동기화 문제를 예방할 수 있다.
+
+
 <br/>
 <br/>
 
