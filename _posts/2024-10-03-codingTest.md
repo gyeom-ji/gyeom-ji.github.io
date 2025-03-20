@@ -199,7 +199,15 @@ class Solution {
 
 : <span style="color:#9fb584">**나열된 수의 누적된 합**</span>으로, 수열 An에 대해서 각 인덱스까지의 구간의 합을 구하는 것이다. Prefix Sum의 <span style="color:#9fb584">**각 요소는 해당 인덱스까지의 부분합(Partial Sum)**</span>을 의미한다. 시간복잡도 측면에서 이득을 취하는 알고리즘이다.
 
+### 💡 1차원 배열 누적합 공식
+
 $$sum[i] \ = \ sum[i-1] \ + \ arr[i]$$
+
+### 💡 2차원 배열 누적합 공식
+
+$$dp[i][j] \ = \ dp[i-1][j] \ + \ dp[i][j-1] \ - \ dp[i-1][j-1] \ + \ arr[i][j]$$
+
+<br/>
 
 ``` ex
 배열 [1,2,3,4,5,0]으로 각 구간까지 합을 구하는 배열을 구할 때 
@@ -236,8 +244,15 @@ $$sum[i] \ = \ sum[i-1] \ + \ arr[i]$$
 
 : 누적합을 이용하여 O(N + M)의 시간으로 구간합을 구할 수 있다.
 
+### 💡 1차원 배열 구간합 공식
+
 $$sum[j] \ - \ sum[i-1] \ = \ 구간 [i, \ j]의 합$$
 
+### 💡 2차원 배열 구간합 공식
+
+$$dp[x][y] \ - \ dp[i - 1][y] \ - \ dp[x][j-1] \ + \ dp[i-1][j-1] \ = \ 구간 [(i,j), \ (x,y)]의 합$$
+
+<br/>
 
 ``` ex
 
@@ -453,6 +468,923 @@ print(anw)
 
 </div>
 </details>
+
+#### [기상청 인턴 신현수](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Bronze/2435.%E2%80%85%EA%B8%B0%EC%83%81%EC%B2%AD%E2%80%85%EC%9D%B8%ED%84%B4%E2%80%85%EC%8B%A0%ED%98%84%EC%88%98)
+
+측정한 온도가 어떤 정수의 수열로 주어졌을 때, 연속적인 며칠 동안의 온도의 합이 가장 큰 값! 이것을 구하면 된다.<br/>
+
+현수가 N일동안 측정한 온도가 순서대로 주어졌을 때, 연속적인 K일 동안의 온도의 합이 가장 큰 값을 구해보세요.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{ Int($0)! }
+let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+
+var result = Int.min
+var dp = Array(repeating: 0, count: input[0] + 1)
+
+dp[0] = 0
+dp[1] = arr[0]
+
+
+for i in 1..<input[0] {
+    dp[i + 1] = dp[i] + arr[i]
+}
+
+for i in 0..<input[0] - input[1] + 1{
+    result = max(result, dp[i + input[1]] - dp[i])
+}
+
+print(result)
+```
+
+</div>
+</details>
+
+#### [2차원 배열의 합](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/2167.%E2%80%852%EC%B0%A8%EC%9B%90%E2%80%85%EB%B0%B0%EC%97%B4%EC%9D%98%E2%80%85%ED%95%A9)
+
+2차원 배열이 주어졌을 때 (i, j) 위치부터 (x, y) 위치까지에 저장되어 있는 수들의 합을 구하는 프로그램을 작성하시오.<br/>
+배열의 (i, j) 위치는 i행 j열을 나타낸다.
+
+
+``` Tip
+💡 점화식을 사용해 2차원 배열의 누적합을 구한다. 
+ 　 
+  　점화식을 사용해 (i,j)~(x,y) 까지 배열의 합을 구한다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+var dp = Array(repeating: Array(repeating: 0, count: input[1] + 1), count: input[0] + 1)
+var result = [Int]()
+
+for i in 1...input[0] {
+    let inputLine = readLine()!.split{$0 == " "}.map{Int($0)!}
+
+    for j in 1...input[1] {
+        dp[i][j] = dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1] + inputLine[j - 1]
+        // dp가 inputLine보다 사이즈가 크기 때문에 -1
+    }
+}
+
+let K = Int(readLine()!)!
+for _ in 0..<K {
+    let inputLine = readLine()!.split{$0 == " "}.map{Int($0)!}
+    let i = inputLine[0], j = inputLine[1], x = inputLine[2], y = inputLine[3]
+    
+    result.append(dp[x][y] - dp[x][j - 1] - dp[i - 1][y] + dp[i - 1][j - 1])
+}
+
+print(result.map{String($0)}.joined(separator: "\n"))
+```
+
+</div>
+</details>
+
+#### [Maximum Subarray](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/10211.%E2%80%85Maximum%E2%80%85Subarray)
+
+크기 N인 정수형 배열 X가 있을 때, X의 부분 배열(X의 연속한 일부분) 중 각 원소의 합이 가장 큰 부분 배열을 찾는 Maximum subarray problem(최대 부분배열 문제)은 컴퓨터 과학에서 매우 잘 알려져 있다.
+<br/>
+여러분은 N과 배열 X가 주어졌을 때, X의 maximum subarray의 합을 구하자. 즉, max1 ≤ i ≤ j ≤ N (X[i]+...+X[j])를 구하자.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let K = Int(readLine()!)!
+
+for _ in 0..<K {
+    let N = Int(readLine()!)!
+    let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+    var dp = Array(repeating: 0, count: N + 1)
+    var result = Int.min
+    
+    for i in 1...N {
+        dp[i] = max(dp[i - 1] + arr[i - 1], arr[i - 1])
+        result = max(dp[i], result)
+    }
+    
+    print(result)
+}
+```
+
+</div>
+</details>
+
+#### [합 구하기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/11441.%E2%80%85%ED%95%A9%E2%80%85%EA%B5%AC%ED%95%98%EA%B8%B0)
+
+N개의 수 A1, A2, ..., AN이 입력으로 주어진다. 총 M개의 구간 i, j가 주어졌을 때, i번째 수부터 j번째 수까지 합을 구하는 프로그램을 작성하시오.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let N = Int(readLine()!)!
+let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+let M = Int(readLine()!)!
+var dp = Array(repeating: 0, count: N + 1)
+
+for i in 1...N {
+    dp[i] = dp[i - 1] + arr[i - 1]
+}
+
+for _ in 0..<M {
+    let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+
+    print(dp[input[1]] - dp[input[0] - 1])
+}
+```
+
+</div>
+</details>
+
+#### [합 구하기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/20438.%E2%80%85%EC%B6%9C%EC%84%9D%EC%B2%B4%ED%81%AC)
+
+코로나 바이러스로 인해 H 대학은 비대면 강의를 실시하고 있다. 조교를 담당하게 된 지환이는 출석체크 방식을 바꾸려고 한다.<br/>
+
+학생들은 접속 순서대로 3번부터 N + 2번까지 입장 번호를 받게 된다.<br/>
+
+지환이가 한 학생에게 출석 코드를 보내게 되면, 해당 학생은 본인의 입장 번호의 배수인 학생들에게 출석 코드를 보내어 해당 강의의 출석을 할 수 있게끔 한다.<br/>
+
+하지만, K명의 졸고 있는 학생들은 출석 코드를 제출하지 않고, 다른 학생들에게 보내지 않는다.<br/>
+
+지환이는 무작위로 한 명의 학생에게 출석 코드를 보내는 행위를 Q번 반복한 뒤, 출석부 정리를 위해 특정 구간의 입장 번호를 받은 학생들 중에서 출석이 되지 않은 학생들의 수를 구하고 싶다.<br/>
+
+M개의 줄에 걸쳐서 각 구간에 대해서 출석이 되지 않은 학생들의 수를 출력하라.
+
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+let N = input[0], K = input[1], Q = input[2], M = input[3]
+let sleepArr = readLine()!.split{$0 == " "}.map{Int($0)!}.sorted(by: <)
+let codeArr = readLine()!.split{$0 == " "}.map{Int($0)!}.sorted(by: <)
+var check = Array(repeating: 1, count: N + 3)
+var dp = Array(repeating: 0, count: N + 3)
+
+for i in 0..<K {
+    check[sleepArr[i]] = -1
+}
+
+for i in 0..<Q {
+    var codeNum = codeArr[i]
+    var val = 2
+    
+    if check[codeNum] != -1 {
+        while codeNum <= N + 2 {
+            check[codeNum] = check[codeNum] == -1 ? -1 : 0
+            codeNum = codeArr[i] * val
+            val += 1
+        }
+    }
+}
+
+for i in 3..<N+3 {
+    let value = check[i] == -1 ? 1 : check[i]
+    dp[i] = dp[i - 1] + value
+}
+
+for _ in 0..<M {
+    let range = readLine()!.split{$0 == " "}.map{Int($0)!}
+
+    print(dp[range[1]] - dp[range[0] - 1])
+}
+```
+
+</div>
+</details>
+
+
+#### [구간합 구하기 5](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/11660.%E2%80%85%EA%B5%AC%EA%B0%84%E2%80%85%ED%95%A9%E2%80%85%EA%B5%AC%ED%95%98%EA%B8%B0%E2%80%855)
+
+N×N개의 수가 N×N 크기의 표에 채워져 있다. (x1, y1)부터 (x2, y2)까지 합을 구하는 프로그램을 작성하시오. (x, y)는 x행 y열을 의미한다.<br/>
+
+예를 들어, N = 4이고, 표가 아래와 같이 채워져 있는 경우를 살펴보자.<br/>
+
+|1|2|3|4|
+|:------:|:------:|:------:|:------:|
+|2|3|4|5|
+|3|4|5|6|
+|4|5|6|7|
+
+여기서 (2, 2)부터 (3, 4)까지 합을 구하면 3+4+5+4+5+6 = 27이고, (4, 4)부터 (4, 4)까지 합을 구하면 7이다.<br/>
+
+표에 채워져 있는 수와 합을 구하는 연산이 주어졌을 때, 이를 처리하는 프로그램을 작성하시오.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+let N = input[0], M = input[1]
+var dp = Array(repeating: Array(repeating: 0, count: N + 1), count: N + 1)
+
+for i in 1...N {
+    let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+    for j in 1...N {
+        dp[i][j] = dp[i][j - 1] + dp[i - 1][j] - dp[i - 1][j - 1] + arr[j - 1]
+    }
+}
+
+for _ in 0..<M {
+    let range = readLine()!.split{$0 == " "}.map{Int($0)!}
+    let i = range[0], j = range[1], x = range[2], y = range[3]
+    
+    print(dp[x][y] - dp[i - 1][y] - dp[x][j - 1] + dp[i - 1][j - 1])
+}
+```
+
+</div>
+</details>
+
+
+#### [주지수](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/15724.%E2%80%85%EC%A3%BC%EC%A7%80%EC%88%98)
+
+네모 왕국의 왕인 진경대왕은 왕국의 영토를 편하게 통치하기 위해서 1X1의 단위 구역을 여러 개 묶어서 하나의 거대 행정구역인 주지수(州地數, 마을의 땅을 셈)를 만들 예정이다. 진경대왕은 주지수를 만들기 위해서 일정한 직사각형 범위 내에 살고 있는 사람 수를 참고 자료로 쓰고 싶어한다.<br/>
+
+![15724](/assets/img/15724.jpg)<br/>
+
+진경대왕은 굉장히 근엄한 왕이기 때문에 당신에게 4개의 숫자로 직사각형 범위를 알려줄 것이다.
+
+예를 들어, 위와 같이 사람이 살고 있다고 가정할 때 <그림 1>의 직사각형 범위의 사람 수를 알고 싶다면 진경대왕은 네 개의 정수 1 1 3 2를 부를 것이다. 마찬가지로 <그림 2>는 1 1 1 4, <그림 3>은 1 1 4 4가 될 것이다.
+
+진경대왕을 위하여 이 참고 자료를 만들어내는 프로그램을 작성해보자.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+let N = input[0], M = input[1]
+var dp = Array(repeating: Array(repeating: 0, count: M + 1), count: N + 1)
+
+for i in 1...N {
+    let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+    for j in 1...M {
+        dp[i][j] = dp[i][j - 1] + dp[i - 1][j] - dp[i - 1][j - 1] + arr[j - 1]
+    }
+}
+
+let K = Int(readLine()!)!
+
+for _ in 0..<K {
+    let range = readLine()!.split{$0 == " "}.map{Int($0)!}
+    let i = range[0], j = range[1], x = range[2], y = range[3]
+    
+    print(dp[x][y] - dp[i - 1][y] - dp[x][j - 1] + dp[i - 1][j - 1])
+}
+```
+
+</div>
+</details>
+
+#### [피아노 체조](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/21318.%E2%80%85%ED%94%BC%EC%95%84%EB%85%B8%E2%80%85%EC%B2%B4%EC%A1%B0)
+
+피아노를 사랑하는 시은이는 매일 아침 피아노 체조를 한다. 시은이는 N개의 악보를 가지고 있으며, 1번부터 N번까지의 번호로 부른다. 각 악보는 1 이상 109 이하의 정수로 표현되는 난이도를 가지고 있다. 난이도를 나타내는 수가 클수록 어려운 악보이다. 1 ≤ x ≤ y ≤ N 을 만족하는 두 정수 x, y를 골라 x번부터 y번까지의 악보를 번호 순서대로 연주하는 것이 피아노 체조이다.<br/>
+
+시은이는 피아노 체조를 할 때, 지금 연주하는 악보가 바로 다음에 연주할 악보보다 어렵다면 실수를 한다. 다시 말하자면, i(x ≤ i < y)번 악보의 난이도가 i + 1번 악보의 난이도보다 높다면 실수를 한다. 특히, 마지막으로 연주하는 y번 악보에선 절대 실수하지 않는다. 시은이는 오늘도 피아노 체조를 하기 위해 두 정수 x와 y를 골랐고, 문득 궁금한 것이 생겼다. 오늘 할 피아노 체조에서 실수하는 곡은 몇 개나 될까?
+
+``` Tip
+💡 마지막으로 연주하는 y번 악보에서는 실수하지 않기 때문에 구간[x, y-1]의 합을 구한다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let N = Int(readLine()!)!
+let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+var dp = Array(repeating: 0, count: N + 1)
+
+for i in 1..<N {
+    dp[i] = dp[i - 1]
+    if arr[i - 1] > arr[i] {
+        dp[i] += 1
+    }
+}
+
+let Q = Int(readLine()!)!
+for _ in 0..<Q {
+    let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+    let i = input[0], j = input[1]
+    print(dp[j - 1] - dp[i - 1])
+}
+```
+
+</div>
+</details>
+
+#### [꿀 따기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Gold/21758.%E2%80%85%EA%BF%80%E2%80%85%EB%94%B0%EA%B8%B0)
+
+아래와 같이 좌우로 N개의 장소가 있다. 장소들 중 서로 다른 두 곳을 골라서 벌을 한 마리씩 둔다. 또, 다른 한 장소를 골라서 벌통을 둔다. 아래 그림에서 연한 회색의 장소는 벌이 있는 장소이고 진한 회색의 장소는 벌통이 있는 장소이다.
+
+![15724](/assets/img/21758(2).avif)
+
+
+두 마리 벌은 벌통으로 똑바로 날아가면서 지나가는 모든 칸에서 꿀을 딴다. 각 장소에 적힌 숫자는 벌이 지나가면서 꿀을 딸 수 있는 양이다.<br/>
+
+1. 두 마리가 모두 지나간 장소에서는 두 마리 모두 표시된 양 만큼의 꿀을 딴다. (벌통이 있는 장소에서도 같다.)
+2. 벌이 시작한 장소에서는 어떤 벌도 꿀을 딸 수 없다.
+
+위의 그림과 같이 배치된 경우 두 마리의 벌 모두 
+$4 + 1 + 4 + 9 + 9 = 27$의 꿀을 따서, 전체 꿀의 양은 54가 된다.
+
+
+![15724](/assets/img/21758(3).avif)
+
+위의 그림과 같이 배치된 경우 왼쪽 장소에서 출발한 벌은 
+$9 + 4 + 4 + 9 + 9 = 35$의 꿀을 따고 오른쪽 장소에서 출발한 벌은 
+$4 + 9 + 9 = 22$의 꿀을 따므로, 전체 꿀의 양은 
+$57$이 된다.
+
+![15724](/assets/img/21758(4).avif)
+
+위의 그림과 같은 경우는 전체 꿀의 양이 31이 된다.
+
+장소들의 꿀 양을 입력으로 받아 벌들이 딸 수 있는 가능한 최대의 꿀의 양을 계산하는 프로그램을 작성하라.
+
+``` Tip
+💡 case를 3개로 나눠 문제를 풀이한다.
+case 1. 꿀통이 오른쪽에 있을 경우
+case 2. 꿀통이 왼쪽에 있을 경우
+case 3. 꿀통이 중앙에 있을 경우
+
+```
+
+
+![15724](/assets/img/21758.jpeg)
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let N = Int(readLine()!)!
+let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+var dp = Array(repeating: 0, count: N + 1)
+var result = Int.min
+
+for i in 1...N {
+    dp[i] = dp[i - 1] + arr[i - 1]
+}
+
+// 1. 채집통 오른쪽
+for i in 2..<N {
+    let first = dp[N] - dp[1] - arr[i - 1]
+    let second = dp[N] - dp[i]
+
+    result = max(result, first + second)
+}
+
+// 2. 채집통 왼쪽
+for i in 2..<N {
+    let first = dp[N - 1] - arr[i - 1]
+    let second = dp[i - 1]
+
+    result = max(result, first + second)
+}
+
+// 3. 채집통 중앙
+for i in 2..<N {
+    let first = dp[i] - dp[1]
+    let second = dp[N - 1] - dp[i - 1]
+
+    result = max(result, first + second)
+}
+
+
+print(result)
+```
+
+</div>
+</details>
+
+#### [점수따먹기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Gold/1749.%E2%80%85%EC%A0%90%EC%88%98%EB%94%B0%EB%A8%B9%EA%B8%B0)
+
+동주는 항상 혼자 노느라 심심하다. 하지만 혼자 놀기의 고수가 된 동주는 매일매일 게임을 개발하여 혼자놀기의 진수를 우리에게 보여준다. 어느 날 동주는 새로운 게임을 개발하였다. 바로 점수 따먹기라는 게임인데 그다지 재밌어 보이지는 않는다.
+<br/>
+
+동주가 개발한 게임은 이렇다. 일단 N*M 행렬을 그린 다음, 각 칸에 -10,000 이상 10,000 이하의 정수를 하나씩 쓴다. 그런 다음 그 행렬의 부분행렬을 그려 그 안에 적힌 정수의 합을 구하는 게임이다.
+<br/>
+
+동주가 혼자 재밌게 놀던 중 지나가는 당신을 보고 당신을 붙잡고 게임을 하자고 한다. 귀찮은 당신은 정수의 합이 최대가 되는 부분행렬을 구하여 빨리 동주에게서 벗어나고 싶다.
+
+``` Tip
+💡 2차원 배열의 모든 구간합 [(i, j), (x, y)] (i <= x, j <= y)을 구하며 최댓값을 갱신한다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+var dp = Array(repeating: Array(repeating: 0, count: input[1] + 1), count: input[0] + 1)
+var result = Int.min
+
+for i in 1...input[0] {
+    let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+    
+    for j in 1...input[1] {
+        dp[i][j] = dp[i - 1][j] + dp[i][j - 1] + arr[j - 1] - dp[i - 1][j - 1]
+    }
+}
+
+for i in 1...input[0] {
+    for j in 1...input[1] {
+        for x in i...input[0] {
+            for y in j...input[1] {
+                result = max(result, dp[x][y] - dp[i - 1][y] - dp[x][j - 1] + dp[i - 1][j - 1])
+            }
+        }
+    }
+}
+print(result)
+
+```
+
+</div>
+</details>
+
+<br/>
+
+## [깊이 우선 탐색 DFS](https://gyeom-ji.github.io/posts/depthFirstSearch-algorithm/)
+
+---
+
+#### [바이러스](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/2606.%E2%80%85%EB%B0%94%EC%9D%B4%EB%9F%AC%EC%8A%A4)
+
+신종 바이러스인 웜 바이러스는 네트워크를 통해 전파된다. 한 컴퓨터가 웜 바이러스에 걸리면 그 컴퓨터와 네트워크 상에서 연결되어 있는 모든 컴퓨터는 웜 바이러스에 걸리게 된다.
+<br/>
+
+예를 들어 7대의 컴퓨터가 <그림 1>과 같이 네트워크 상에서 연결되어 있다고 하자. 1번 컴퓨터가 웜 바이러스에 걸리면 웜 바이러스는 2번과 5번 컴퓨터를 거쳐 3번과 6번 컴퓨터까지 전파되어 2, 3, 5, 6 네 대의 컴퓨터는 웜 바이러스에 걸리게 된다. 하지만 4번과 7번 컴퓨터는 1번 컴퓨터와 네트워크상에서 연결되어 있지 않기 때문에 영향을 받지 않는다.
+<br/>
+
+![2606](/assets/img/2606.png)
+
+어느 날 1번 컴퓨터가 웜 바이러스에 걸렸다. 컴퓨터의 수와 네트워크 상에서 서로 연결되어 있는 정보가 주어질 때, 1번 컴퓨터를 통해 웜 바이러스에 걸리게 되는 컴퓨터의 수를 출력하는 프로그램을 작성하시오.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+import Foundation
+
+let N = Int(readLine()!)!
+let MAX = Int(readLine()!)!
+var cnt = 0
+var graph = Array(repeating:Array(repeating: 0, count: 0), count: N + 1)
+var visited = Array(repeating: false, count: N + 1)
+var result = 0
+
+while cnt < MAX {
+    let pair = readLine()!.split{$0 == " "}.map{Int($0)!}
+    graph[pair[0]].append(pair[1])
+    graph[pair[1]].append(pair[0])
+    cnt += 1
+}
+
+visited[1] = true
+dfs(1)
+print(result)
+
+func dfs(_ cur: Int) {
+
+    if graph[cur].count == 0 {
+        return
+    }
+    
+    for next in graph[cur] {
+        if !visited[next] {
+            visited[next] = true
+            result += 1
+            dfs(next)
+        }
+    }
+}
+```
+
+</div>
+</details>
+
+#### [DFS와 BFS](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/1260.%E2%80%85DFS%EC%99%80%E2%80%85BFS)
+
+그래프를 DFS로 탐색한 결과와 BFS로 탐색한 결과를 출력하는 프로그램을 작성하시오. 단, 방문할 수 있는 정점이 여러 개인 경우에는 정점 번호가 작은 것을 먼저 방문하고, 더 이상 방문할 수 있는 점이 없는 경우 종료한다. 정점 번호는 1번부터 N번까지이다.
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+import Foundation
+
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+var graph = Array(repeating: Array(repeating: 0, count: 0), count: input[0] + 1)
+var visited = Array(repeating: false, count: input[0] + 1)
+
+for _ in 0..<input[1] {
+    let vertices = readLine()!.split{$0 == " "}.map{Int($0)!}
+    graph[vertices[0]].append(vertices[1])
+    graph[vertices[1]].append(vertices[0])
+}
+// 정렬
+graph = graph.map {$0.sorted()}
+
+print(input[2], terminator: " ")
+visited[input[2]] = true
+dfs(input[2])
+
+print()
+print(input[2], terminator: " ")
+visited = Array(repeating: false, count: input[0] + 1)
+bfs(input[2])
+
+func dfs(_ start: Int) {
+    if graph[start].count == 0 {
+        return
+    }
+    
+    for next in graph[start] {
+        if !visited[next] {
+            visited[next] = true
+            print(next, terminator: " ")
+            dfs(next)
+        }
+    }
+}
+
+func bfs(_ start: Int) {
+    var queue = [start]
+    visited[start] = true
+    
+    while !queue.isEmpty {
+        let cur = queue.removeFirst()
+        
+        for next in graph[cur] {
+            if !visited[next] {
+                queue.append(next)
+                visited[next] = true
+                print(next, terminator: " ")
+            }
+        }
+    }
+}
+```
+
+</div>
+</details>
+
+<br/>
+
+## [너비 우선 탐색 BFS](https://gyeom-ji.github.io/posts/breadthFirstSearch-algorithm/)
+
+---
+
+#### [직사각형 탈출](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Gold/16973.%E2%80%85%EC%A7%81%EC%82%AC%EA%B0%81%ED%98%95%E2%80%85%ED%83%88%EC%B6%9C)
+
+크기가 N×M인 격자판에 크기가 H×W인 직사각형이 놓여 있다. 격자판은 크기가 1×1인 칸으로 나누어져 있다. 격자판의 가장 왼쪽 위 칸은 (1, 1), 가장 오른쪽 아래 칸은 (N, M)이다. 직사각형의 가장 왼쪽 위칸은 (Sr, Sc)에 있을 때, 이 직사각형의 가장 왼쪽 위칸을 (Fr, Fc)로 이동시키기 위한 최소 이동 횟수를 구해보자.
+<br/>
+격자판의 각 칸에는 빈 칸 또는 벽이 있다. 직사각형은 벽이 있는 칸에 있을 수 없다. 또한, 직사각형은 격자판을 벗어날 수 없다.
+<br/>
+직사각형은 한 번에 왼쪽, 오른쪽, 위, 아래 중 한 방향으로 한 칸 이동시킬 수 있다.
+<br/>
+첫째 줄에 최소 이동 횟수를 출력한다. 이동할 수 없는 경우에는 -1을 출력한다.
+
+``` Tip
+💡 최소 이동 횟수를 구하는 문제이기 때문에 BFS를 사용했다.<br/> 시작점을 각 방향으로 이동할 수 있는지 확인(isVaild)하고, 직사각형의 한쪽 면이 이동할 때 벽이 있는지 확인(isWall)한다.<br/> 큐가 비었는데 도착점에 도착하지 못할 경우 -1을 출력한다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let size = readLine()!.split{$0 == " "}.map{Int($0)!}
+let N = size[0], M = size[1]
+var map = [[Int]]()
+var visited = Array(repeating: Array(repeating: false, count: M), count: N)
+
+for _ in 0..<N {
+    let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+    map.append(arr)
+}
+
+let input = readLine()!.split{$0 == " "}.map{Int($0)! - 1}
+let H = input[0], W = input[1], Sr = input[2], Sc = input[3], Fr = input[4], Fc = input[5]
+let x = [1, -1, 0, 0], y = [0, 0, 1, -1]
+
+bfs()
+
+func bfs() {
+    var queue = [(Sr, Sc, 0)]
+    visited[Sr][Sc] = true
+
+    while !queue.isEmpty {
+        let cur = queue.removeFirst()
+        
+        if (cur.0, cur.1) == (Fr, Fc) {
+            print(cur.2)
+            break
+        }
+        
+        for i in 0..<4 {
+            let newX = cur.0 + x[i]
+            let newY = cur.1 + y[i]
+            
+            if isValid(newX, newY) && !visited[newX][newY] {
+                if !isWall(newX, newY, i) {
+                    visited[newX][newY] = true
+                    queue.append((newX, newY, cur.2 + 1))
+                }
+            } else {
+                continue
+            }
+        }
+        if queue.isEmpty {
+            print(-1)
+        }
+    }
+}
+
+func isWall(_ x: Int, _ y: Int, _ direction: Int) -> Bool {
+
+    switch(direction) {
+    case 0: // 아래
+        for j in 0...W {
+            if map[x + H][y + j] == 1 {
+                return true
+            }
+        }
+    case 1: // 위
+        for j in 0...W {
+            if map[x][y + j] == 1 {
+                return true
+            }
+        }
+    case 2: // 오른쪽
+        for i in 0...H {
+            if map[x + i][y + W] == 1 {
+                return true
+            }
+        }
+    case 3: // 왼쪽
+        for i in 0...H {
+            if map[x + i][y] == 1 {
+                return true
+            }
+        }
+    default:
+        break
+    }
+    return false
+}
+
+func isValid(_ x: Int, _ y: Int) -> Bool {
+    return x + H < N && y + W < M && x >= 0 && y >= 0
+}
+```
+
+</div>
+</details>
+
+#### [유기농 배추](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/1012.%E2%80%85%EC%9C%A0%EA%B8%B0%EB%86%8D%E2%80%85%EB%B0%B0%EC%B6%94)
+
+차세대 영농인 한나는 강원도 고랭지에서 유기농 배추를 재배하기로 하였다. 농약을 쓰지 않고 배추를 재배하려면 배추를 해충으로부터 보호하는 것이 중요하기 때문에, 한나는 해충 방지에 효과적인 배추흰지렁이를 구입하기로 결심한다. 이 지렁이는 배추근처에 서식하며 해충을 잡아 먹음으로써 배추를 보호한다. 특히, 어떤 배추에 배추흰지렁이가 한 마리라도 살고 있으면 이 지렁이는 인접한 다른 배추로 이동할 수 있어, 그 배추들 역시 해충으로부터 보호받을 수 있다. 한 배추의 상하좌우 네 방향에 다른 배추가 위치한 경우에 서로 인접해있는 것이다.<br/>
+
+한나가 배추를 재배하는 땅은 고르지 못해서 배추를 군데군데 심어 놓았다. 배추들이 모여있는 곳에는 배추흰지렁이가 한 마리만 있으면 되므로 서로 인접해있는 배추들이 몇 군데에 퍼져있는지 조사하면 총 몇 마리의 지렁이가 필요한지 알 수 있다. 예를 들어 배추밭이 아래와 같이 구성되어 있으면 최소 5마리의 배추흰지렁이가 필요하다. 0은 배추가 심어져 있지 않은 땅이고, 1은 배추가 심어져 있는 땅을 나타낸다.<br/>
+
+```
+1	1	0	0	0	0	0	0	0	0
+0	1	0	0	0	0	0	0	0	0
+0	0	0	0	1	0	0	0	0	0
+0	0	0	0	1	0	0	0	0	0
+0	0	1	1	0	0	0	1	1	1
+0	0	0	0	1	0	0	1	1	1
+```
+
+
+``` Tip
+💡 각 테스트 케이스에 필요한 최소 지렁이 수를 구하는 문제이기 때문에 BFS를 사용했다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+import Foundation
+
+let T = Int(readLine()!)!
+var cnt = 0
+var map = [[Int]]()
+var visited = [[Bool]]()
+let dx = [1, -1, 0, 0], dy = [0, 0, 1, -1]
+
+
+while cnt < T {
+    var result = 0
+    var cabbageArr = [(Int, Int)]()
+    let info = readLine()!.split{$0 == " "}.map{Int($0)!}
+    map = Array(repeating: Array(repeating:0, count: info[1]), count: info[0])
+    visited = Array(repeating: Array(repeating: false, count: info[1]), count: info[0])
+    
+    for _ in 0..<info[2] {
+        let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+        map[input[0]][input[1]] = 1
+        cabbageArr.append((input[0], input[1]))
+    }
+    
+    for i in 0..<cabbageArr.count {
+        if !visited[cabbageArr[i].0][cabbageArr[i].1] {
+            bfs((cabbageArr[i].0, cabbageArr[i].1))
+            result += 1
+        }
+    }
+    cnt += 1
+    
+    print(result)
+}
+
+func bfs(_ start: (Int, Int)) {
+    var queue = [start]
+    visited[start.0][start.1] = true
+    
+    while !queue.isEmpty {
+        let (x, y) = queue.removeFirst()
+        
+        for i in 0..<4 {
+            let newX = dx[i] + x
+            let newY = dy[i] + y
+            
+            if isValid(newX, newY){
+                visited[newX][newY] = true
+                queue.append((newX, newY))
+            }
+        }
+    }
+}
+
+func isValid(_ x: Int, _ y : Int) -> Bool {
+    return x >= 0 && x < map.count && y >= 0 && y < map[x].count && map[x][y] == 1 && !visited[x][y]
+}
+```
+
+#### [촌수계산](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/2644.%E2%80%85%EC%B4%8C%EC%88%98%EA%B3%84%EC%82%B0)
+
+우리 나라는 가족 혹은 친척들 사이의 관계를 촌수라는 단위로 표현하는 독특한 문화를 가지고 있다. 이러한 촌수는 다음과 같은 방식으로 계산된다. 기본적으로 부모와 자식 사이를 1촌으로 정의하고 이로부터 사람들 간의 촌수를 계산한다. 예를 들면 나와 아버지, 아버지와 할아버지는 각각 1촌으로 나와 할아버지는 2촌이 되고, 아버지 형제들과 할아버지는 1촌, 나와 아버지 형제들과는 3촌이 된다.<br/>
+
+여러 사람들에 대한 부모 자식들 간의 관계가 주어졌을 때, 주어진 두 사람의 촌수를 계산하는 프로그램을 작성하시오.
+
+``` Tip
+💡 입력을 트리로 생각하여 출발노드에서 도착 노드까지 간선의 개수를 반환한다.<br/> 도착 노드에 도착할 수 없을 경우 -1을 출력한다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let N = Int(readLine()!)!
+let target = readLine()!.split{$0 == " "}.map{Int($0)!}
+let M = Int(readLine()!)!
+var graph = Array(repeating: Array(repeating: 0, count: 0), count: N + 1)
+var visited = Array(repeating: false, count: N + 1)
+
+for _ in 0..<M {
+    let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+
+    graph[input[0]].append(input[1])
+    graph[input[1]].append(input[0])
+}
+
+print(bfs(target[0]))
+
+func bfs(_ start: Int) -> Int {
+    var queue = [(start, 0)]
+    visited[start] = true
+    
+    while !queue.isEmpty {
+        let (cur, depth) = queue.removeFirst()
+        
+        if cur == target[1] {
+            return depth
+        }
+        
+        for next in graph[cur] {
+            if !visited[next] {
+                visited[next] = true
+                queue.append((next, depth + 1))
+            }
+        }
+    }
+      return -1
+}
+```
+
+</div>
+</details>
+
+
+#### [섬의 개수](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/4963.%E2%80%85%EC%84%AC%EC%9D%98%E2%80%85%EA%B0%9C%EC%88%98)
+
+정사각형으로 이루어져 있는 섬과 바다 지도가 주어진다. 섬의 개수를 세는 프로그램을 작성하시오.<br/>
+
+한 정사각형과 가로, 세로 또는 대각선으로 연결되어 있는 사각형은 걸어갈 수 있는 사각형이다. <br/>
+
+두 정사각형이 같은 섬에 있으려면, 한 정사각형에서 다른 정사각형으로 걸어서 갈 수 있는 경로가 있어야 한다. 지도는 바다로 둘러싸여 있으며, 지도 밖으로 나갈 수 없다.
+
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let dx = [1, -1, 0, 0, -1, -1, 1, 1], dy = [0, 0, 1, -1, -1, 1, -1, 1]
+var map = [[Int]]()
+var visited = [[Bool]]()
+
+while true {
+    let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+    var result = 0
+    if input == [0, 0] {
+        break
+    }
+    
+    visited = Array(
+        repeating: Array(repeating: false, count: input[0]),
+        count: input[1]
+    )
+    map = [[Int]]()
+    
+    for _ in 0..<input[1] {
+        let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+        map.append(arr)
+    }
+    
+    for i in 0..<input[1] {
+        for j in 0..<input[0] {
+            if map[i][j] == 1 && !visited[i][j] {
+                bfs((i,j))
+                result += 1
+                
+            }
+        }
+    }
+
+    print(result)
+
+}
+
+func bfs(_ start: (Int, Int)) {
+    var queue = [(start.0, start.1)]
+    visited[start.0][start.1] =  true
+    
+    while !queue.isEmpty {
+        let cur = queue.removeFirst()
+        
+        for i in 0..<8 {
+            let newX = dx[i] + cur.0
+            let newY = dy[i] + cur.1
+            
+            if isValid(newX, newY) {
+                visited[newX][newY] = true
+                queue.append((newX, newY))
+            }
+        }
+    }
+}
+
+func isValid(_ x: Int, _ y: Int) -> Bool {
+    return x >= 0 && x < map.count && y >= 0 && y < map[x].count && map[x][y] == 1 && !visited[x][y]
+}
+```
+
+</div>
+</details>
+
 
 <br/>
 
@@ -2015,7 +2947,7 @@ func dikstra(_ start: Int) -> [Int] {
 컴공을 졸업한 지 30년이 넘어가는 호석이는 이제 코딩으로 이 문제를 해결할 줄 모른다. 알고리즘 퇴물 호석이를 위해서 최적의 위치가 될 수 있는 건물 2개의 번호와 그 때의 "모든 건물에서 가장 가까운 치킨집까지 왕복하는 최단 시간의 총합"을 출력하자. 만약 이러한 건물 조합이 여러 개라면, 건물 번호 중 작은 게 더 작을수록, 작은 번호가 같다면 큰 번호가 더 작을수록 좋은 건물 조합이다.
 
 ``` Tip
-💡 floydWarshall 알고리즘으로 모든 정점에서 모든 정점으로 가는 최단 경로를 구한다. 
+💡 floydWarshall 알고리즘으로 모든 정점에서 모든 정점으로 가는 최단 경로를 구한다. <br/>
  　 2개 건물 선택 후 모든 건물을 방문하며 최소 왕복거리를 구한다.
 ```
 <br/>
@@ -2248,12 +3180,55 @@ func countTwoFriends() -Int {
 </div>
 </details>
 
-
 <br/>
 
-## [DP](https://gyeom-ji.github.io/posts/dynamic-programming/)
+## 조합
 
 ---
+
+
+- <span style="color:#9fb584">**순서와 상관 없이 서로 다른 n개에서 r개를 선택하는 경우의 수**</span>이다. 
+  - 무작위, 동시에 꺼내다, 선택하다, 고르다
+  - 배열 {1,2,3} 에서 3개를 뽑는 경우
+  - 순열 : { 1, 2, 3 }, { 1, 3, 2 } , { 2, 1, 3 } .... 등 모두 다른 것으로 취급 ➡️ 3P3 = 6
+  - 조합 : { 1, 2, 3 }, { 1, 3, 2 } , { 2, 1, 3} 모두 같은 것으로 취급 ➡️ 3C3 = 1
+
+$${_nC_r} \ = \ \frac{n!}{r!(n \ - \ r)!}$$
+
+$${_5C_3} \ = \ {5 \ × \ 4 \ × \ 3}/{3 \ × \ 2 \ × \ 1} \ = \ 10$$
+
+$${_2C_2} \ = \ {2 \ × \ 1}/{2 \ × \ 1} \ = \ 1$$
+
+- a, b, c 3개의 공 중 2개의 공을 뽑는 경우의 수
+  - a를 선택할 경우 + a를 선택하지 않을 경우 = 나머지 2개 중 1개를 고를 경우 + 나머지 2개 중 2개를 고를 경우
+- 즉, <span style="color:#9fb584">**n-1 개의 공에서 r-1개를 뽑는 경우와 n-1개의 공에서 r개를 뽑는 경우를 더하는 것과 같다.**</span>
+- 즉 조합은 하나의 원소를 선택할 경우 + 하나의 원소를 선택하지 않을 경우 이 둘의 합을 나타낸다.
+
+$${_nC_r} \ = \ {_{n-1}C_{r-1}} \ + \ {_{n-1}C_r}$$
+
+$${_nC_0} \ = \ 1, \ {_nC_n} \ = \ 1$$
+
+### 순열
+
+- <span style="color:#9fb584">**서로 다른 n개에서 r개를 뽑아 순서대로 나열**</span>하는 것이다.
+
+$${_nP_r} \ = \ \frac{n!}{(n \ - \ r)!} \ 단, 0 \ < \ r \ ≤ \ n$$
+
+$${_nP_0} \ = \ 1$$
+
+- n부터 하나씩 작아지는 숫자들을 총 r개 곱하는 것으로 구할 수 있다.
+  - 5부터 작아지는 수를 3개 곱한다.
+  
+$${_5P_3} \ = \ 5 \ × \ 4 \ × \ 3 \ = \ 60$$
+
+$${_2P_2} \ = \ 2 \ × \ 1 \ = \ 2$$
+
+- 조합 ➡️ 순열
+
+$${_nC_r} \ × \ r! \ = \ {_nP_r}$$
+
+$$\frac{n!}{r!(n \ - \ r)!} \ × \ r! \ = \ \frac{n!}{(n \ - \ r)!}$$
+
 
 #### [다리 놓기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/1010.%E2%80%85%EB%8B%A4%EB%A6%AC%E2%80%85%EB%86%93%EA%B8%B0)
 
@@ -2264,12 +3239,8 @@ func countTwoFriends() -Int {
 ![1010](/assets/img/1010.jpeg)<br/>
 
 ``` Tip
-💡 중복이 없고 순서와 상관 없이 선택 하는 경우의 수 = 조합 nCr
+💡 순서와 상관 없이 다리가 서로 겹치지 않는 경우의 수를 구해야 하기 때문에 조합 nCr을 사용한다.
 ```
-
-$${_nC_r} \ = \ {_{n-1}C_{r-1}} \ + \ {_{n-1}C_r}$$
-
-$${_nC_0} = 1, \ {_nC_n} = 1$$
 
 <details>
 <summary>코드</summary>
@@ -2306,6 +3277,159 @@ for _ in 0..<T {
 </div>
 </details>
 
+#### [나머지 합](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Gold/10986.%E2%80%85%EB%82%98%EB%A8%B8%EC%A7%80%E2%80%85%ED%95%A9)
+
+수 N개 A1, A2, ..., AN이 주어진다. 이때, 연속된 부분 구간의 합이 M으로 나누어 떨어지는 구간의 개수를 구하는 프로그램을 작성하시오.<br/>
+
+즉, Ai + ... + Aj (i ≤ j) 의 합이 M으로 나누어 떨어지는 (i, j) 쌍의 개수를 구해야 한다.<br/>
+
+``` Tip
+💡 단순한 누적합만 사용할 경우 시작점과 끝점의 모든 경우를 확인해야 하므로 시간 복잡도가 O(n^2)이 된다.
+
+[ 구간합이 M일 경우의 수 ]
+1. 누적합 배열 dp를 M으로 나눴을 때 0이 되는 구간합
+2. 누적합 dp[0]...dp[n] 중 나머지 값이 동일한 dp[i], dp[j]가 있을 때 dp[j] - dp[i - 1] = 0이 되는 2개의 배열
+
+1번의 경우 : M으로 나눴을 때 0이 되는 구간합 (dp[2], dp[3], dp[5] 총 3개)
+2번의 경우 : 나머지가 동일한 누적합들 중 2개를 고르는 경우의 수를 구한다.
+나머지가 0인것 중에서 2개를 뽑는 수 : 3C2 = 3
+나머지가 1인것 중에서 2개를 뽑는 수 : 2C2 = 1
+즉, 3 + 3 + 1 = 7 이 된다.
+
+result += (1번) dp를 M으로 나눴을 때 0이되는 구간합
+result += (2번) M으로 나눴을 때 나머지는 0부터 M-1까지 있으므로 모두 순회하며 경우의 수를 구한다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let input = readLine()!.split{$0 == " "}.map{Int($0)!}
+let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+var dp = Array(repeating:0, count: input[0] + 1)
+var count = Array(repeating:0, count: input[1])
+
+
+for i in 1...input[0] {
+    dp[i] = dp[i - 1] + arr[i - 1]
+    count[dp[i] % input[1]] += 1
+}
+
+var result = count[0]
+
+for i in 0..<input[1] {
+    result += (count[i] * (count[i] - 1)) / 2
+}
+
+print(result)
+```
+
+</div>
+</details>
+
+#### [나누기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Gold/21757.%E2%80%85%EB%82%98%EB%88%84%EA%B8%B0)
+
+ 
+$N$개의 정수 수열 
+$A_1, A_2, \dots , A_N$이 주어진다. 수열을 각각이 연속된 네 부분으로 나누려고 한다. 단, 각 부분은 최소 하나의 수를 포함해야 한다. 또, 각 부분의 합은 모두 같아야 한다. 즉, 어떤 
+$i, j, k$ (
+$1 \le i < j < k < N$)에 대해서 
+$[A_1, \dots, A_i], [A_{i+1}, \dots, A_j], [A_{j+1}, \dots, A_k], [A_{k+1}, \dots, A_N]$으로 나눈다.<br/>
+
+예를 들어 주어진 수열이 
+$4, −1, 2, 1, −3, 1, 2, 2, 1, 3$이라고 하자. 이 수열을 아래와 같이 나누면 각 부분의 합이 달라서 허용되는 형태가 아니다.<br/>
+
+ 
+$[4, −1, 2], [1, −3, 1, 2], [2, 1], [3]$ 
+
+아래과 같이 나눈 경우 각 부분의 합이 모두 같다.<br/>
+
+ 
+$[4, −1], [2, 1], [−3, 1, 2, 2, 1], [3]$ 
+
+아래와 같이 나눈 경우들도 각 부분의 합이 모두 같다.<br/>
+
+ 
+$[4, −1], [2, 1, −3, 1, 2], [2, 1], [3]$ 혹은 
+$[4, −1, 2, 1, −3], [1, 2], [2, 1], [3]$ 
+
+수열을 입력 받아 위와 같이 나눌 수 있는 가능한 방법의 개수를 계산하는 프로그램을 작성하라.<br/>
+
+
+``` Tip
+💡 수열을 4등분으로 나눠야 하기 때문에 아래의 요소들을 고려하여 문제를 해결한다.
+1. 전체 배열의 합이 4의 배수가 아닌 경우
+    - sum[N]의 값이 4의 배수인 경우에만 문제를 해결할 수 있다.
+    - 0을 반환한다.
+2. 전체 배열의 합이 0인 경우
+    - 수열을 4등분 하는 문제이기 때문에 마지막 인덱스는 항상 포함된다.
+    - 조합을 이용하여 마지막 인덱스를 제외한 서로 다른 N-1개에서 3개를 뽑는다.
+3. sum[i]가 몫으로 나눠 떨어질 경우
+    - dp[index]는 index 구간까지 나눌 수 있는 경우의 수이다.
+    - 현재 index구간을 나눌수 있는 경우의 수 = (index-1)구간까지 만들 수 있는 경우의 수 + 현재 index번째 구간을 나눌 수 있는 경우의 수
+    - dp[index] = dp[index] + dp[index-1]
+    - index가 4일 경우는 제외한다.
+    - index 4는 항상 가장 마지막 숫자만 될 수 있으며, 그 전에 나온 숫자의 경우 무시하고 탐색해야 정확한 값을 얻을 수 있다. 
+    - 모든 구간합 배열을 탐색한 후 dp[3]으로 가능한 경우의 수를 계산할 수 있다.
+```
+
+<details>
+<summary>코드</summary>
+<div markdown="1">
+
+``` swift
+let N = Int(readLine()!)!
+let arr = readLine()!.split{$0 == " "}.map{Int($0)!}
+var sum = Array(repeating: 0, count: N + 1)
+var dp = Array(repeating:0, count: 4)
+var result = 0
+
+dp[0] = 1
+
+// 누적합 구하기
+for i in 1...N {
+    sum[i] = sum[i - 1] + arr[i - 1]
+}
+
+// 전체 배열의 합이 4의 배수가 아닌 경우
+if sum[N] % 4 != 0 {
+    result = 0
+    
+} else {
+    let quotient = sum[N] / 4
+    
+    // 전체 배열의 합이 0인 경우
+    // 마지막 인덱스는 항상 포함됨
+    // 마지막 인덱스를 뺀 서로 다른 N-1개에서 3개를 선택
+    // (N - 1)C3
+    if quotient == 0 {
+        result = (N - 1) * (N - 2) * (N - 3) / 6
+    } else {
+        for i in 1..<N {
+            let index = sum[i] / quotient
+            // sum[i]가 몫으로 나눠 떨어질 경우
+            if sum[i] % quotient == 0 {
+                // dp[index] = index 구간까지 나눌 수 있는 경우의 수
+                // 현재 index구간을 나눌 수 있는 경우의 수 = (index-1)구간까지 만들 수 있는 경우의 수 + 현재 index번째 구간을 나눌 수 있는 경우의 수
+                // dp[index] = dp[index] + dp[index-1]
+                dp[index] += dp[index - 1]
+            }
+        }
+        result = dp[3]
+    }
+}
+print(result)
+```
+
+</div>
+</details>
+
+<br/>
+
+## [DP](https://gyeom-ji.github.io/posts/dynamic-programming/)
+
+---
 
 #### [1로 만들기](https://github.com/gyeom-ji/codingtest/tree/main/%EB%B0%B1%EC%A4%80/Silver/1463.%E2%80%851%EB%A1%9C%E2%80%85%EB%A7%8C%EB%93%A4%EA%B8%B0)
 
